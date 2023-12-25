@@ -7,11 +7,16 @@ use serde_derive::Deserialize;
 #[allow(unused)]
 pub struct Eoplog {
     path: String,
+    ser_name: String,
 }
 
 impl Eoplog {
-    pub fn get_path(self) -> String {
-        self.path
+    pub fn get_path(&self) -> &String {
+        &self.path
+    }
+
+    pub fn get_ser_name(&self) -> &String {
+        &self.ser_name
     }
 }
 

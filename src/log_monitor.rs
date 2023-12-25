@@ -1,30 +1,31 @@
-use std::ffi::OsStr;
-use std::path::PathBuf;
+use std::rc::Rc;
+use std::sync::Arc;
 
 use anyhow::Result;
 use log::{error, info};
 
-use crate::settings::Settings;
+use crate::settings::{Eoplog, Settings};
 
 pub fn init_monitor(config: Settings) {
-    for path in config.get_eoplogs() {
-        let path_buf = PathBuf::from(path.get_path());
-        LogFileMonitor::new(&path_buf).unwrap().init_watcher();
-        info!("LogFileMonitor init success: {:?}", &path_buf)
+    for eoplog in config.get_eoplogs() {
+        // let path_buf = PathBuf::from(eoplog.get_path());
+        LogFileMonitor::new(&eoplog).unwrap().init_watcher();
+        info!("LogFileMonitor init success: {:?}", &eoplog)
     }
 }
 
-pub struct LogFileMonitor(PathBuf);
+pub struct LogFileMonitor(Rc<Eoplog>);
 
 impl LogFileMonitor {
-    pub fn new(path_buf: &PathBuf) -> Result<LogFileMonitor> {
-        Ok(LogFileMonitor(path_buf.clone()))
+    pub fn new(eoplog: &Eoplog) -> Result<LogFileMonitor> {
+        Ok(LogFileMonitor(Rc::new(eoplog.to_owned())))
     }
 
     // log watcher init
     pub fn init_watcher(&self) {
-        let default_log = self.0.to_owned();
-        let mut log_watcher = async_log_watcher::LogWatcher::new(default_log.to_owned());
+        let rc_log = Rc::clone(&self.0);
+        let default_log = rc_log.get_path();
+        let mut log_watcher = async_log_watcher::LogWatcher::new(default_log);
         let log_watcher_handle = log_watcher.spawn(true);
 
         tokio::task::spawn(async {
@@ -33,12 +34,11 @@ impl LogFileMonitor {
             }
         });
 
-        let file_name = default_log.file_name().unwrap().to_owned();
-
+        let ser_name = Arc::new(rc_log.get_ser_name().to_owned());
         tokio::task::spawn(async move {
             while let Some(data) = log_watcher.read_message().await {
                 match std::str::from_utf8(&data) {
-                    Ok(data) => send_msg(data, Box::from(file_name.clone())).await,
+                    Ok(data) => send_msg(data, Arc::clone(&ser_name)).await,
                     Err(err) => error!("read_message parse data error: {:?}", err),
                 }
             }
@@ -64,8 +64,8 @@ impl LogFileMonitor {
     // }
 }
 
-async fn send_msg(msg: &str, file_name: Box<OsStr>) {
-    info!("Collection logs: file name[{:?}] \n{}", file_name, msg)
+async fn send_msg(msg: &str, ser_name: Arc<String>) {
+    info!("Collection logs: file name[{:?}] \n{}", ser_name, msg)
 }
 
 // async fn send_msg(msg: &str) {
