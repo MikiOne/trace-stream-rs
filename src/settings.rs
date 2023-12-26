@@ -22,9 +22,22 @@ impl Eoplog {
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(unused)]
+pub struct KafkaConfig {
+    broker: String,
+    topic: String,
+}
+
+impl KafkaConfig {
+    pub fn get_broker(&self) -> &String { &self.broker }
+    pub fn get_topic(&self) -> &String { &self.topic }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[allow(unused)]
 pub struct Settings {
     debug: bool,
-    eoplogs: Vec<Eoplog>,
+    pub eoplogs: Vec<Eoplog>,
+    pub kafka_config: KafkaConfig
 }
 
 impl Settings {
@@ -39,9 +52,13 @@ impl Settings {
         setting.try_deserialize()
     }
 
-    pub fn get_eoplogs(self) -> Vec<Eoplog> {
-        self.eoplogs
-    }
+    // pub fn get_eoplogs(self) -> Vec<Eoplog> {
+    //     self.eoplogs
+    // }
+    //
+    // pub fn get_kafka_config(self) -> KafkaConfig {
+    //     self.kafka_config
+    // }
 
     pub fn is_debug(&self) -> bool {
         self.debug

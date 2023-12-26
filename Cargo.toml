@@ -36,3 +36,12 @@ log = "0.4"
 #jsonwebtoken = "9.1.0"
 #thiserror = "1.0.50"
 #reqwest = { version = "0.11", features = ["blocking", "json", "multipart"] }
+rdkafka = { version = "0.36.0", features = ["cmake-build"] }
+
+
+[dev-dependencies]
+tracing-subscriber = "0.3.18"
+kafka = "0.9"
+futures = { version = "0.3.30", features = [] }
+rand = "0.8.5"
+clap = "4.4.11"

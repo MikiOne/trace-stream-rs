@@ -6,8 +6,8 @@ use log::{error, info};
 
 use crate::settings::{Eoplog, Settings};
 
-pub fn init_monitor(config: Settings) {
-    for eoplog in config.get_eoplogs() {
+pub fn init_monitor(eoplogs: Vec<Eoplog>) {
+    for eoplog in eoplogs {
         // let path_buf = PathBuf::from(eoplog.get_path());
         LogFileMonitor::new(&eoplog).unwrap().init_watcher();
         info!("LogFileMonitor init success: {:?}", &eoplog)
