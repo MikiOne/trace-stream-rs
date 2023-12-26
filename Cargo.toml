@@ -11,6 +11,8 @@ config = "0.13.3"
 async-log-watcher = "0.0.1"
 #axum = { version = "0.7.1", features = ["macros"] }
 
+warp = "0.3"
+
 #ntex = { version = "0.7.8", features = ["tokio"] }
 #ntex-bytes = "0.1.21"
 #ntex-files = "0.3.0"
