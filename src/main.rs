@@ -17,21 +17,7 @@ async fn main() {
     env_logger::init();
     log_monitor::init_monitor(config);
 
-    // let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
-
-    loop {
-        // match listener.accept().await {
-        //     Ok((socket, addr)) => {
-        //         tokio::spawn(async move {
-        //             // 此处处理连接
-        //         });
-        //     }
-        //     Err(e) => {
-        //         // 打印错误并继续监听
-        //         println!("Failed to accept connection: {}", e);
-        //     }
-        // }
-    }
+    loop {}
 }
 
 // #[tokio::main]

@@ -37,7 +37,6 @@ impl LogFileMonitor {
         let ser_name = Arc::new(rc_log.get_ser_name().to_owned());
         tokio::task::spawn(async move {
             while let Some(data) = log_watcher.read_message().await {
-                println!("3333333");
                 match std::str::from_utf8(&data) {
                     Ok(data) => send_msg(data, Arc::clone(&ser_name)).await,
                     Err(err) => error!("read_message parse data error: {:?}", err),
