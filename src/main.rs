@@ -1,8 +1,7 @@
 use std::env;
-use axum::http::StatusCode;
-use axum::response::{Html, IntoResponse};
 use axum::Router;
-use axum::routing::get;
+use axum::routing;
+use tokio::net::TcpListener;
 
 
 use oasis_log_collector::log_monitor;
@@ -64,19 +63,11 @@ async fn main() {
     env_logger::init();
     log_monitor::init_monitor(config);
 
-    let app = Router::new().route("/", get(handler));
-    let app = app.fallback(handler_404);
-
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:13000").await.unwrap();
+    let app = Router::new().route("/", routing::get(handler));
+    let listener = TcpListener::bind("127.0.0.1:13000").await.expect("Axum tcp server start error");
     axum::serve(listener, app).await.unwrap();
 }
-async fn handler() -> Html<&'static str> {
-    Html("<h1>Nothing!</h1>")
-}
-
-async fn handler_404() -> impl IntoResponse {
-    (StatusCode::NOT_FOUND, "Nothing")
-}
+async fn handler() {}
 
 // ntex web
 // #[ntex::main]
