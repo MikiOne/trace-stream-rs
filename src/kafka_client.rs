@@ -10,9 +10,7 @@ impl Producer {
     pub fn new(kafka_config: KafkaConfig) -> Self {
         let broker = kafka_config.get_broker();
         let mut client = ClientConfig::new();
-        let producer_config = client.set("bootstrap.servers", broker)
-            // .set("")
-            ;
+        let producer_config = client.set("bootstrap.servers", broker);
 
         let producer: FutureProducer = producer_config.create().expect("创建生产者失败");
         Producer(producer)
