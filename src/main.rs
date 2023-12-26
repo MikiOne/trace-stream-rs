@@ -1,31 +1,11 @@
-use std::env;
+use std::{env, io};
 
 
 use oasis_log_collector::log_monitor;
 use oasis_log_collector::settings::Settings;
 
 
-use warp::Filter;
-
-#[tokio::main]
-async fn main() {
-    let config = Settings::new().expect("读取配置文件出错");
-
-    env::set_var("RUST_BACKTRACE", "1");
-    if config.is_debug() {
-        env::set_var("RUST_LOG", "debug");
-    } else {
-        env::set_var("RUST_LOG", "info");
-    }
-    env_logger::init();
-    log_monitor::init_monitor(config);
-
-    let hello = warp::path!("hello" / String)
-        .map(|name| format!("Hello, {}!", name));
-
-    warp::serve(hello).run(([127, 0, 0, 1], 13030)).await;
-}
-
+// use warp::Filter;
 // #[tokio::main]
 // async fn main() {
 //     let config = Settings::new().expect("读取配置文件出错");
@@ -39,8 +19,33 @@ async fn main() {
 //     env_logger::init();
 //     log_monitor::init_monitor(config);
 //
-//     loop {}
+//     let hello = warp::path!("hello" / String)
+//         .map(|name| format!("Hello, {}!", name));
+//
+//     warp::serve(hello).run(([127, 0, 0, 1], 13030)).await;
 // }
+
+use tokio::net::TcpListener;
+
+// tokio tcp
+#[tokio::main]
+async fn main()  -> io::Result<()> {
+    let config = Settings::new().expect("读取配置文件出错");
+
+    env::set_var("RUST_BACKTRACE", "1");
+    if config.is_debug() {
+        env::set_var("RUST_LOG", "debug");
+    } else {
+        env::set_var("RUST_LOG", "info");
+    }
+    env_logger::init();
+    log_monitor::init_monitor(config);
+
+    let listener = TcpListener::bind("127.0.0.1:8080").await?;
+    loop {
+        let (_, _) = listener.accept().await?;
+    }
+}
 
 // #[tokio::main]
 // async fn main() {
