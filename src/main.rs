@@ -2,7 +2,6 @@ use std::env;
 use axum::Router;
 use axum::routing;
 use tokio::net::TcpListener;
-use oasis_log_collector::kafka_client::Producer;
 
 use oasis_log_collector::log_monitor;
 use oasis_log_collector::settings::Settings;
@@ -20,7 +19,7 @@ async fn main() {
     env_logger::init();
     log_monitor::init_monitor(config.eoplogs);
 
-    let kafka_producer = Producer::new(config.kafka_config);
+    // let kafka_producer = Producer::new(config.kafka_config);
     // test
     // kafka_producer.produce("my-topic", "ni好友").await;
 
