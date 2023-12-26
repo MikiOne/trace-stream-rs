@@ -13,13 +13,18 @@ async fn main() {
     let topic = "my-topic";
 
     // 创建生产者配置
-    let mut binding = ClientConfig::new();
-    let producer_config = binding.set("bootstrap.servers", broker);
+    let mut client_config = ClientConfig::new();
+    let producer_config = client_config.set("bootstrap.servers", broker)
+        // .set("security.protocol", "SASL_PLAINTEXT")
+        // .set("sasl.mechanisms", "PLAIN")
+        // .set("sasl.username", "kafka")
+        // .set("sasl.password", "kafka-secret")
+    ;
 
     // 创建生产者
     let producer: FutureProducer = producer_config.create().expect("创建生产者失败");
 
-    let message = "Hello, Kafka111111!";
+    let message = "Hello, Kafka1111112222!";
     let record = FutureRecord::to(topic).key("").payload(message);
 
     let timeout = Timeout::After(Duration::from_secs(3));
@@ -28,7 +33,7 @@ async fn main() {
         Ok(delivery_result) => {
             let (partition, offset) = delivery_result;
             println!("消息发送成功，分区：{}，偏移量：{}", partition, offset);
-        },
+        }
         Err(e) => {
             eprintln!("消息发送失败：{:?}", e);
         }
