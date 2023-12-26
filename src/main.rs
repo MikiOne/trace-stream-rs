@@ -64,8 +64,8 @@ async fn main() {
     log_monitor::init_monitor(config);
 
     let app = Router::new().route("/", routing::get(handler));
-    let listener = TcpListener::bind("127.0.0.1:13000").await.expect("Axum tcp server start error");
-    axum::serve(listener, app).await.unwrap();
+    let listener = TcpListener::bind("127.0.0.1:13000").await.expect("tcp port bind error");
+    axum::serve(listener, app).await.expect("Axum server start error");
 }
 async fn handler() {}
 
