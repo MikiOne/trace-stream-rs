@@ -2,6 +2,7 @@ use std::env;
 use axum::Router;
 use axum::routing;
 use tokio::net::TcpListener;
+use oasis_log_collector::kafka_client::Producer;
 
 use oasis_log_collector::log_monitor;
 use oasis_log_collector::settings::Settings;
@@ -10,7 +11,7 @@ use oasis_log_collector::settings::Settings;
 async fn main() {
     let config = Settings::new().expect("读取配置文件出错");
 
-    env::set_var("RUST_BACKTRACE", "1");
+    env::set_var("RUST_BACKTRACE", "    1");
     if config.is_debug() {
         env::set_var("RUST_LOG", "debug");
     } else {
