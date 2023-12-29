@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rdkafka = { version = "0.36.0", features = ["cmake-build"] }
+rdkafka = { version = "0.36.0" }
 common = { version = "0.1.0", path = "../common" }
 
 [features]
@@ -16,6 +16,7 @@ full = [
     "rabbitmq"
 ]
 kafka = [
-    "rdkafka/cmake-build"
+    "rdkafka/cmake-build",
+    "rdkafka/gssapi-vendored"
 ]
 rabbitmq = []

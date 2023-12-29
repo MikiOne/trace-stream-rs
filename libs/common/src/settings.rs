@@ -25,11 +25,16 @@ impl Eoplog {
 pub struct KafkaConfig {
     broker: String,
     topic: String,
+    username: String,
+    password: String,
 }
 
 impl KafkaConfig {
     pub fn get_broker(&self) -> &String { &self.broker }
     pub fn get_topic(&self) -> &String { &self.topic }
+
+    pub fn get_username(&self) -> &String {&self.username}
+    pub fn get_password(&self) -> &String {&self.password}
 }
 
 #[derive(Debug, Clone, Deserialize)]

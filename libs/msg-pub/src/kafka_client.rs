@@ -13,7 +13,13 @@ impl Producer {
     pub fn new(kafka_config: KafkaConfig) -> Self {
         let broker = kafka_config.get_broker();
         let mut client = ClientConfig::new();
-        let producer_config = client.set("bootstrap.servers", broker);
+        let producer_config = client.set("bootstrap.servers", broker)
+            // .set("group.id", "consumer_group")
+            .set("security.protocol", "SASL_PLAINTEXT")
+            .set("sasl.mechanisms", "PLAIN")
+            .set("sasl.username", kafka_config.get_username())
+            .set("sasl.password", kafka_config.get_password())
+            ;
 
         let producer: FutureProducer = producer_config.create().expect("创建生产者失败");
         Producer(producer)

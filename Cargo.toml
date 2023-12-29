@@ -14,8 +14,8 @@ members = [
 
 [dependencies]
 common = { version = "0.1.0", path = "libs/common" }
-#msg-pub = { version = "0.1.0", path = "libs/msg-pub", features = ["kafka"] }
-msg-pub = { version = "0.1.0", path = "libs/msg-pub" }
+msg-pub = { version = "0.1.0", path = "libs/msg-pub", features = ["kafka"] }
+#msg-pub = { version = "0.1.0", path = "libs/msg-pub" }
 
 tokio = { version = "1.35.1", features = ["rt", "rt-multi-thread", "macros", "net"] }
 async-log-watcher = "0.0.1"
@@ -38,7 +38,6 @@ axum = { version = "0.7.1", features = ["macros"] }
 #jsonwebtoken = "9.1.0"
 #thiserror = "1.0.50"
 #reqwest = { version = "0.11", features = ["blocking", "json", "multipart"] }
-rdkafka = { version = "0.36.0", features = ["cmake-build"] }
 
 
 [dev-dependencies]
