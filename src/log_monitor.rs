@@ -1,10 +1,9 @@
 use std::rc::Rc;
 use std::sync::Arc;
 
-use anyhow::Result;
-use log::{error, info};
-
-use crate::settings::{Eoplog, Settings};
+use common::anyhow::Result;
+use common::log::{error, info};
+use common::settings::Eoplog;
 
 pub fn init_monitor(eoplogs: Vec<Eoplog>) {
     for eoplog in eoplogs {

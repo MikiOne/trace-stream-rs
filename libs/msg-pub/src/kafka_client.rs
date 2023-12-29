@@ -2,10 +2,13 @@ use std::time::Duration;
 use rdkafka::ClientConfig;
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::util::Timeout;
-use crate::settings::KafkaConfig;
+use common::settings::KafkaConfig;
 
+
+#[cfg(feature = "kafka")]
 pub struct Producer(FutureProducer);
 
+#[cfg(feature = "kafka")]
 impl Producer {
     pub fn new(kafka_config: KafkaConfig) -> Self {
         let broker = kafka_config.get_broker();

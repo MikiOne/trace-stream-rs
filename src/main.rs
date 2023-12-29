@@ -2,10 +2,10 @@ use std::env;
 use axum::Router;
 use axum::routing;
 use tokio::net::TcpListener;
-use oasis_log_collector::kafka_client::Producer;
+use msg_pub::kafka_client::Producer;
 
 use oasis_log_collector::log_monitor;
-use oasis_log_collector::settings::Settings;
+use common::settings::Settings;
 
 #[tokio::main]
 async fn main() {
@@ -17,10 +17,10 @@ async fn main() {
     } else {
         env::set_var("RUST_LOG", "info");
     }
-    env_logger::init();
+    common::env_logger::init();
     log_monitor::init_monitor(config.eoplogs);
 
-    // let kafka_producer = Producer::new(config.kafka_config);
+    let kafka_producer = Producer::new(config.kafka_config);
     // test
     // kafka_producer.produce("my-topic", "ni好友").await;
 
