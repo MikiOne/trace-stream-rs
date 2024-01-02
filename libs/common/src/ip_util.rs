@@ -2,7 +2,7 @@ use pnet::datalink::{self, NetworkInterface};
 use std::net::IpAddr;
 use log::debug;
 
-fn get_ipv4() -> Option<IpAddr> {
+pub fn get_ipv4() -> Option<IpAddr> {
     let interfaces = datalink::interfaces();
 
     for interface in interfaces {
@@ -29,4 +29,10 @@ fn get_ipv4_address(interface: &NetworkInterface) -> Option<IpAddr> {
     }
 
     None
+}
+
+#[test]
+fn test_get_ipv4() {
+    let ip =get_ipv4();
+    println!("ip: {:?}", ip);
 }
