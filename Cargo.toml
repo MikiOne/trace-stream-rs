@@ -41,8 +41,3 @@ axum = { version = "0.7.1", features = ["macros"] }
 
 
 [dev-dependencies]
-tracing-subscriber = "0.3.18"
-kafka = "0.9"
-futures = { version = "0.3.30", features = [] }
-rand = "0.8.5"
-clap = "4.4.11"
