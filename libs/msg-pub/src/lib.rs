@@ -2,5 +2,6 @@
 pub mod kafka_client;
 #[cfg(feature = "rabbitmq")]
 pub mod rabbit_client;
-pub mod log_send;
+pub mod api_pub;
+mod http_client;
 

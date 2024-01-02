@@ -1,89 +1,93 @@
-// use std::fs::File;
-// use std::io::Read;
-// use std::path::PathBuf;
-//
-// use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
-// use reqwest::multipart::Form;
-// use reqwest::multipart::Part;
-// use reqwest::{header, Client};
-// use serde::{Deserialize, Serialize};
-//
-// #[derive(Serialize, Clone)]
-// pub struct LogMsg {
-//     mac_address: String,
-//     wallet: String,
-//     msg: Option<String>,
-// }
-//
-// impl LogMsg {
-//     pub fn new(app: &AppInfo, msg: Option<String>) -> Self {
-//         Self {
-//             mac_address: app.mac_address.to_owned(),
-//             wallet: app.public_key.to_owned(),
-//             msg,
-//         }
-//     }
-//
-//     fn to_json(&self) -> Result<String, CommonError> {
-//         Ok(serde_json::to_string(self)?)
-//     }
-//
-//     pub async fn send_msg(&self) -> Result<(), CommonError> {
-//         let ser_url = SettingsCode::LogServerUrl.get_value().await;
-//         let error_uri = SettingsCode::LogErrorUri.get_value().await;
-//         let url = format!("{}{}", ser_url, error_uri);
-//
-//         let mut headers = build_logser_headers().await?;
-//         headers.insert(
-//             header::CONTENT_TYPE,
-//             HeaderValue::from_static("application/octet-stream"),
-//         );
-//
-//
-//         let client = ReqwestClient::build();
-//         let resp = client
-//             .put(url)
-//             .headers(headers)
-//             .body(self.to_json()?)
-//             .send()
-//             .await?;
-//
-//         info!("Send msg to server response.status: {}", resp.status());
-//         Ok(())
-//     }
-//
-//     pub async fn send_file_and_data(&self, filepath: &PathBuf) -> Result<(), CommonError> {
-//         info!("send_file_and_data filepath: {:?}", filepath);
-//         let ser_url = SettingsCode::LogServerUrl.get_value().await;
-//         let file_uri = SettingsCode::LogFileUri.get_value().await;
-//
-//         if let Some(request_id) = &self.msg {
-//             let url = format!("{}{}{}", ser_url, file_uri, request_id);
-//             let mut file = File::open(filepath).unwrap();
-//             let mut file_content = vec![];
-//             file.read_to_end(&mut file_content).unwrap();
-//
-//             let filename = filepath.file_name().unwrap().to_os_string().into_string().unwrap();
-//             info!("send_file_and_data filename: {:?}", &filename);
-//             let form = Form::new()
-//                 .part("file", Part::bytes(file_content).file_name(filename))
-//                 .part("data", Part::text(self.to_json()?));
-//
-//             let headers = build_logser_headers().await?;
-//             let client = ReqwestClient::build();
-//             let resp = client
-//                 .post(url)
-//                 .headers(headers)
-//                 .multipart(form)
-//                 .send()
-//                 .await?;
-//
-//             info!("Update file to server response.status: {}", resp.status());
-//         }
-//         Ok(())
-//     }
-// }
-//
+use std::fs::File;
+use std::io::Read;
+use std::path::PathBuf;
+
+use reqwest::header;
+use reqwest::header::HeaderValue;
+use reqwest::multipart::Form;
+use reqwest::multipart::Part;
+use serde::Serialize;
+
+use common::log::info;
+
+use crate::http_client::ReqwestClient;
+
+#[derive(Serialize, Clone)]
+pub struct LogMsg {
+    mac_address: String,
+    wallet: String,
+    msg: Option<String>,
+}
+
+impl LogMsg {
+    pub fn new(app: &AppInfo, msg: Option<String>) -> Self {
+        Self {
+            mac_address: app.mac_address.to_owned(),
+            wallet: app.public_key.to_owned(),
+            msg,
+        }
+    }
+
+    fn to_json(&self) -> Result<String, CommonError> {
+        Ok(serde_json::to_string(self)?)
+    }
+
+    pub async fn send_msg(&self) -> Result<(), CommonError> {
+        let ser_url = SettingsCode::LogServerUrl.get_value().await;
+        let error_uri = SettingsCode::LogErrorUri.get_value().await;
+        let url = format!("{}{}", ser_url, error_uri);
+
+        let mut headers = build_logser_headers().await?;
+        headers.insert(
+            header::CONTENT_TYPE,
+            HeaderValue::from_static("application/octet-stream"),
+        );
+
+
+        let client = ReqwestClient::build();
+        let resp = client
+            .put(url)
+            .headers(headers)
+            .body(self.to_json()?)
+            .send()
+            .await?;
+
+        info!("Send msg to server response.status: {}", resp.status());
+        Ok(())
+    }
+
+    // pub async fn send_file_and_data(&self, filepath: &PathBuf) -> Result<(), CommonError> {
+    //     info!("send_file_and_data filepath: {:?}", filepath);
+    //     let ser_url = SettingsCode::LogServerUrl.get_value().await;
+    //     let file_uri = SettingsCode::LogFileUri.get_value().await;
+    //
+    //     if let Some(request_id) = &self.msg {
+    //         let url = format!("{}{}{}", ser_url, file_uri, request_id);
+    //         let mut file = File::open(filepath).unwrap();
+    //         let mut file_content = vec![];
+    //         file.read_to_end(&mut file_content).unwrap();
+    //
+    //         let filename = filepath.file_name().unwrap().to_os_string().into_string().unwrap();
+    //         info!("send_file_and_data filename: {:?}", &filename);
+    //         let form = Form::new()
+    //             .part("file", Part::bytes(file_content).file_name(filename))
+    //             .part("data", Part::text(self.to_json()?));
+    //
+    //         let headers = build_logser_headers().await?;
+    //         let client = ReqwestClient::build();
+    //         let resp = client
+    //             .post(url)
+    //             .headers(headers)
+    //             .multipart(form)
+    //             .send()
+    //             .await?;
+    //
+    //         info!("Update file to server response.status: {}", resp.status());
+    //     }
+    //     Ok(())
+    // }
+}
+
 // #[derive(Debug, Serialize, Deserialize, Clone)]
 // pub struct LogCheckResp {
 //     #[serde(rename = "startTime")]
@@ -95,7 +99,7 @@
 //     #[serde(rename = "needUpload")]
 //     need_upload: bool,
 // }
-//
+
 // impl Default for LogCheckResp {
 //     fn default() -> Self {
 //         Self {
@@ -106,7 +110,7 @@
 //         }
 //     }
 // }
-//
+
 // impl LogCheckResp {
 //     async fn search_upload_file(&self, path_buf: &PathBuf, app_info: &AppInfo) {
 //         if self.start_time.is_none() && self.end_time.is_none() {
@@ -142,10 +146,10 @@
 //         }
 //     }
 // }
-//
+
 // #[derive(Debug, Clone)]
 // pub struct LogFile(PathBuf);
-//
+
 // impl LogFile {
 //     pub fn new(path_buf: PathBuf) -> Self {
 //         Self(path_buf)
@@ -179,7 +183,7 @@
 //         }
 //     }
 // }
-//
+
 // pub async fn check_log_request() -> Result<LogCheckResp, CommonError> {
 //     let ser_url = SettingsCode::ServerUrl.get_value().await;
 //     let check_uri = SettingsCode::LogCheckUri.get_value().await;
@@ -203,7 +207,7 @@
 //         }
 //     }
 // }
-//
+
 // async fn build_logser_headers() -> Result<HeaderMap, CommonError> {
 //     let api_key = LocalApiKey::get().await?;
 //     let mut headers = HeaderMap::new();
@@ -213,7 +217,7 @@
 //     );
 //     Ok(headers)
 // }
-//
+
 // async fn build_botser_headers() -> Result<HeaderMap, CommonError> {
 //     let api_key = LocalApiKey::get().await?;
 //     let mut headers = HeaderMap::new();

@@ -8,8 +8,10 @@ edition = "2021"
 [dependencies]
 common = { version = "0.1.0", path = "../common" }
 rdkafka = { version = "0.36.0" }
-
-lapin = { version = "2.3.1", features = ["amq-protocol-codegen"] }
+serde = { version = "1.0.192", features = ["derive"] }
+serde_json = "1.0.109"
+reqwest = { version = "0.11.23", features = ["multipart"] }
+lapin = { version = "2.3.1" }
 futures-lite = "2.1.0"
 async-global-executor = "2.4.1"
 
@@ -34,5 +36,5 @@ kafka = [
     "rdkafka/gssapi-vendored"
 ]
 rabbitmq = [
-#    "amq-protocol-codegen"
+    "lapin/amq-protocol-codegen"
 ]
