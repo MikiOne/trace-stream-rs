@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 config = "0.13.3"
 derive_more = "0.99.17"
+thiserror = "1.0.51"
 
 anyhow = { version = "1.0.75", features = [] }
 serde = { version = "1.0.192", features = ["derive"] }

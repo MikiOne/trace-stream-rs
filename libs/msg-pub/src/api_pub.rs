@@ -1,11 +1,5 @@
-use std::fs::File;
-use std::io::Read;
-use std::path::PathBuf;
-
 use reqwest::header;
 use reqwest::header::HeaderValue;
-use reqwest::multipart::Form;
-use reqwest::multipart::Part;
 use serde::Serialize;
 
 use common::log::info;
@@ -19,42 +13,42 @@ pub struct LogMsg {
     msg: Option<String>,
 }
 
-impl LogMsg {
-    pub fn new(app: &AppInfo, msg: Option<String>) -> Self {
-        Self {
-            mac_address: app.mac_address.to_owned(),
-            wallet: app.public_key.to_owned(),
-            msg,
-        }
-    }
-
-    fn to_json(&self) -> Result<String, CommonError> {
-        Ok(serde_json::to_string(self)?)
-    }
-
-    pub async fn send_msg(&self) -> Result<(), CommonError> {
-        let ser_url = SettingsCode::LogServerUrl.get_value().await;
-        let error_uri = SettingsCode::LogErrorUri.get_value().await;
-        let url = format!("{}{}", ser_url, error_uri);
-
-        let mut headers = build_logser_headers().await?;
-        headers.insert(
-            header::CONTENT_TYPE,
-            HeaderValue::from_static("application/octet-stream"),
-        );
-
-
-        let client = ReqwestClient::build();
-        let resp = client
-            .put(url)
-            .headers(headers)
-            .body(self.to_json()?)
-            .send()
-            .await?;
-
-        info!("Send msg to server response.status: {}", resp.status());
-        Ok(())
-    }
+// impl LogMsg {
+//     pub fn new(app: &AppInfo, msg: Option<String>) -> Self {
+//         Self {
+//             mac_address: app.mac_address.to_owned(),
+//             wallet: app.public_key.to_owned(),
+//             msg,
+//         }
+//     }
+//
+//     fn to_json(&self) -> Result<String, CommonError> {
+//         Ok(serde_json::to_string(self)?)
+//     }
+//
+//     pub async fn send_msg(&self) -> Result<(), CommonError> {
+//         let ser_url = SettingsCode::LogServerUrl.get_value().await;
+//         let error_uri = SettingsCode::LogErrorUri.get_value().await;
+//         let url = format!("{}{}", ser_url, error_uri);
+//
+//         let mut headers = build_logser_headers().await?;
+//         headers.insert(
+//             header::CONTENT_TYPE,
+//             HeaderValue::from_static("application/octet-stream"),
+//         );
+//
+//
+//         let client = ReqwestClient::build();
+//         let resp = client
+//             .put(url)
+//             .headers(headers)
+//             .body(self.to_json()?)
+//             .send()
+//             .await?;
+//
+//         info!("Send msg to server response.status: {}", resp.status());
+//         Ok(())
+//     }
 
     // pub async fn send_file_and_data(&self, filepath: &PathBuf) -> Result<(), CommonError> {
     //     info!("send_file_and_data filepath: {:?}", filepath);
@@ -86,7 +80,7 @@ impl LogMsg {
     //     }
     //     Ok(())
     // }
-}
+// }
 
 // #[derive(Debug, Serialize, Deserialize, Clone)]
 // pub struct LogCheckResp {

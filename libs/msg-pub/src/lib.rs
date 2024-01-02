@@ -4,4 +4,5 @@ pub mod kafka_client;
 pub mod rabbit_client;
 pub mod api_pub;
 mod http_client;
+pub mod errors;
 

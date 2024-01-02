@@ -34,4 +34,3 @@ impl Debug for BizError {
         write!(f, "{}: {}", self.code_reason(), self.err_str)
     }
 }
-

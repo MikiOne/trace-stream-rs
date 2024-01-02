@@ -7,3 +7,4 @@ mod ip_util;
 pub extern crate anyhow;
 pub extern crate log;
 pub extern crate env_logger;
+pub extern crate thiserror;
