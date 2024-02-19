@@ -1,5 +1,6 @@
 use std::rc::Rc;
 use std::sync::Arc;
+use tokio::sync::OnceCell;
 
 use common::anyhow::Result;
 use common::log::{error, info};
@@ -7,22 +8,25 @@ use common::settings::{LogInfo, RemoteServerConfig};
 use log_upload::api_upload::{LogBody, send_log};
 use log_upload::http_client;
 
-pub fn init_monitor(log_infos: Vec<LogInfo>, remote_server_config: RemoteServerConfig) {
+pub static REMOTE_SERVER: OnceCell<RemoteServerConfig> = OnceCell::const_new();
+
+pub async fn init_monitor(log_infos: Vec<LogInfo>, remote_server_config: RemoteServerConfig) {
+    REMOTE_SERVER.get_or_init(|| async { remote_server_config.to_owned() }).await;
+
     for log_info in log_infos {
         // let path_buf = PathBuf::from(eoplog.get_path());
-        LogInfoMonitor::new(&log_info, remote_server_config.to_owned()).unwrap().init_watcher();
+        LogInfoMonitor::new(&log_info).unwrap().init_watcher();
         info!("LogFileMonitor init success: {:?}", &log_info)
     }
 }
 
 pub struct LogInfoMonitor {
     log_info: Rc<LogInfo>,
-    remote_server: Arc<RemoteServerConfig>,
 }
 
 impl LogInfoMonitor {
-    pub fn new(log_info: &LogInfo, remote_server_config: RemoteServerConfig) -> Result<LogInfoMonitor> {
-        Ok(LogInfoMonitor { log_info: Rc::new(log_info.to_owned()), remote_server: Arc::new(remote_server_config) })
+    pub fn new(log_info: &LogInfo) -> Result<LogInfoMonitor> {
+        Ok(LogInfoMonitor { log_info: Rc::new(log_info.to_owned()) })
     }
 
     // log watcher init
@@ -42,7 +46,7 @@ impl LogInfoMonitor {
         tokio::task::spawn(async move {
             while let Some(data) = log_watcher.read_message().await {
                 match std::str::from_utf8(&data) {
-                    Ok(data) => self.send_msg(data, Arc::clone(&ser_name)).await,
+                    Ok(data) => send_msg(data, Arc::clone(&ser_name)).await,
                     Err(err) => error!("read_message parse data error: {:?}", err),
                 }
             }
@@ -66,15 +70,18 @@ impl LogInfoMonitor {
     //         }
     //     });
     // }
+}
 
+async fn send_msg(msg: &str, ser_name: Arc<String>) {
+    info!("Collection logs: file name[{:?}] \n{}", ser_name, msg);
+    let pub_ip = http_client::get_pub_ip_str();
+    let log_body = LogBody::new(ser_name.to_string(), pub_ip.to_string(), msg.to_string());
 
-    async fn send_msg(&self, msg: &str, ser_name: Arc<String>) {
-        info!("Collection logs: file name[{:?}] \n{}", ser_name, msg);
-        let pub_ip = http_client::get_pub_ip_str();
-        let log_body = LogBody::new(ser_name.to_string(), pub_ip.to_string(), msg.to_string());
-
-        let remote_server = self.remote_server.as_ref();
-        send_log(remote_server, &log_body).await.expect("Watcher send msg to server error: ");
+    match REMOTE_SERVER.get() {
+        Some(remote_server) =>
+            send_log(remote_server, &log_body).await.expect("Watcher send msg to server error: "),
+        None =>
+            error!("Watcher send msg to server error: RemoteServerConfig not found."),
     }
 }
 

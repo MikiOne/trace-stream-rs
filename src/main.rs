@@ -18,7 +18,7 @@ async fn main() {
         env::set_var("RUST_LOG", "info");
     }
     common::env_logger::init();
-    log_monitor::init_monitor(config.log_infos, config.remote_server);
+    log_monitor::init_monitor(config.log_infos, config.remote_server).await;
 
     // let kafka_producer = KafkaPub::new(config.kafka_config);
     // test
