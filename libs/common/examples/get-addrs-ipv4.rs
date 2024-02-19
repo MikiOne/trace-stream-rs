@@ -6,7 +6,7 @@ fn if_addrs() {
             match &iface.addr {
                 get_if_addrs::IfAddr::V4(sad) => {
                     println!("IPv4 address: {}", sad.ip);
-                },
+                }
                 get_if_addrs::IfAddr::V6(sad) => {
                     println!("IPv6 address: {}", sad.ip);
                 }

@@ -1,7 +1,7 @@
 FROM rust:1.73-slim-buster AS builder
 
-RUN USER=root cargo new --bin oasis-log-collector
-WORKDIR ./oasis-log-collector
+RUN USER=root cargo new --bin trace-stream-rs
+WORKDIR ./trace-stream-rs
 COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
 RUN cargo build --release
@@ -29,11 +29,11 @@ RUN groupadd $APP_USER \
     && useradd -g $APP_USER $APP_USER \
     && mkdir -p ${APP}
 
-COPY --from=builder /oasis-log-collector/target/release/oasis-log-collector ${APP}/oasis-log-collector
+COPY --from=builder /trace-stream-rs/target/release/trace-stream-rs ${APP}/trace-stream-rs
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 
 USER $APP_USER
 WORKDIR ${APP}
 
-ENTRYPOINT ["./oasis-log-collector", "--port", "3000"]
+ENTRYPOINT ["./trace-stream-rs", "--port", "3000"]

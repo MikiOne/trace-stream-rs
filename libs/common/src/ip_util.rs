@@ -33,6 +33,6 @@ fn get_ipv4_address(interface: &NetworkInterface) -> Option<IpAddr> {
 
 #[test]
 fn test_get_ipv4() {
-    let ip =get_ipv4();
+    let ip = get_ipv4();
     println!("ip: {:?}", ip);
 }

@@ -50,36 +50,36 @@ pub struct LogMsg {
 //         Ok(())
 //     }
 
-    // pub async fn send_file_and_data(&self, filepath: &PathBuf) -> Result<(), CommonError> {
-    //     info!("send_file_and_data filepath: {:?}", filepath);
-    //     let ser_url = SettingsCode::LogServerUrl.get_value().await;
-    //     let file_uri = SettingsCode::LogFileUri.get_value().await;
-    //
-    //     if let Some(request_id) = &self.msg {
-    //         let url = format!("{}{}{}", ser_url, file_uri, request_id);
-    //         let mut file = File::open(filepath).unwrap();
-    //         let mut file_content = vec![];
-    //         file.read_to_end(&mut file_content).unwrap();
-    //
-    //         let filename = filepath.file_name().unwrap().to_os_string().into_string().unwrap();
-    //         info!("send_file_and_data filename: {:?}", &filename);
-    //         let form = Form::new()
-    //             .part("file", Part::bytes(file_content).file_name(filename))
-    //             .part("data", Part::text(self.to_json()?));
-    //
-    //         let headers = build_logser_headers().await?;
-    //         let client = ReqwestClient::build();
-    //         let resp = client
-    //             .post(url)
-    //             .headers(headers)
-    //             .multipart(form)
-    //             .send()
-    //             .await?;
-    //
-    //         info!("Update file to server response.status: {}", resp.status());
-    //     }
-    //     Ok(())
-    // }
+// pub async fn send_file_and_data(&self, filepath: &PathBuf) -> Result<(), CommonError> {
+//     info!("send_file_and_data filepath: {:?}", filepath);
+//     let ser_url = SettingsCode::LogServerUrl.get_value().await;
+//     let file_uri = SettingsCode::LogFileUri.get_value().await;
+//
+//     if let Some(request_id) = &self.msg {
+//         let url = format!("{}{}{}", ser_url, file_uri, request_id);
+//         let mut file = File::open(filepath).unwrap();
+//         let mut file_content = vec![];
+//         file.read_to_end(&mut file_content).unwrap();
+//
+//         let filename = filepath.file_name().unwrap().to_os_string().into_string().unwrap();
+//         info!("send_file_and_data filename: {:?}", &filename);
+//         let form = Form::new()
+//             .part("file", Part::bytes(file_content).file_name(filename))
+//             .part("data", Part::text(self.to_json()?));
+//
+//         let headers = build_logser_headers().await?;
+//         let client = ReqwestClient::build();
+//         let resp = client
+//             .post(url)
+//             .headers(headers)
+//             .multipart(form)
+//             .send()
+//             .await?;
+//
+//         info!("Update file to server response.status: {}", resp.status());
+//     }
+//     Ok(())
+// }
 // }
 
 // #[derive(Debug, Serialize, Deserialize, Clone)]

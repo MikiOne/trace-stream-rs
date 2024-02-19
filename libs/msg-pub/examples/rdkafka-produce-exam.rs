@@ -19,7 +19,7 @@ async fn main() {
         // .set("sasl.mechanisms", "PLAIN")
         // .set("sasl.username", "kafka")
         // .set("sasl.password", "kafka-secret")
-    ;
+        ;
 
     // 创建生产者
     let producer: FutureProducer = producer_config.create().expect("创建生产者失败");

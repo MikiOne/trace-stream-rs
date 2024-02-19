@@ -5,7 +5,7 @@
 # https://docs.docker.com/go/dockerfile-reference/
 
 ARG RUST_VERSION=1.74.1
-ARG APP_NAME=oasis-log-collector
+ARG APP_NAME=trace-stream-rs
 
 ################################################################################
 # xx is a helper for cross-compilation.

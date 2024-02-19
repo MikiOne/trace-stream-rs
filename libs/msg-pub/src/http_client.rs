@@ -37,6 +37,7 @@ impl ReqwestClient {
         })
     }
 }
+
 pub fn get_public_ip() -> Result<IpAddr, PubError> {
     let client = blocking::Client::new();
     let response = client.get("https://api.ipify.org").send()?;
