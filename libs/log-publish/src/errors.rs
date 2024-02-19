@@ -1,5 +1,5 @@
 use std::net::AddrParseError;
-use common::thiserror::Error;
+use thiserror::Error;
 
 #[derive(Debug, Error)]
 pub enum PubError {
