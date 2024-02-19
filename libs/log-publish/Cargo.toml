@@ -7,23 +7,23 @@ edition = "2021"
 
 [dependencies]
 common = { version = "0.1.0", path = "../common" }
-rdkafka = { version = "0.36.0" }
-serde = { version = "1.0.192", features = ["derive"] }
-serde_json = "1.0.109"
-reqwest = { version = "0.11.23", features = ["multipart", "blocking"] }
+rdkafka = { version = "0.36.2" }
+serde = { version = "1.0.196", features = ["derive"] }
+serde_json = "1.0.113"
+reqwest = { version = "0.11.24", features = ["multipart", "blocking"] }
 lapin = { version = "2.3.1" }
-futures-lite = "2.1.0"
+futures-lite = "2.2.0"
 async-global-executor = "2.4.1"
 thiserror = "1.0.57"
 
 
 [dev-dependencies]
-tokio = { version = "1.35.1", features = ["rt", "rt-multi-thread", "macros", "net"] }
+tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread", "macros", "net"] }
 tracing-subscriber = "0.3.18"
 kafka = "0.10.0"
 futures = { version = "0.3.30", features = [] }
 rand = "0.8.5"
-clap = "4.4.11"
+clap = "4.5.1"
 
 
 [features]
