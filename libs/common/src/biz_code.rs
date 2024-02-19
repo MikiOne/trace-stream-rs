@@ -56,4 +56,6 @@ biz_codes! {
     ("DB0001", DATABASE_ERROR, "Database error");
     ("ORM001", DIESEL_ERROR, "Diesel error");
     ("UR0001", USER_NOT_FOUND, "User not found");
+    ("LG0001", LOG_TO_JSON_STRING_ERROR, "LogBody to json string error");
+    ("NET001", REQWEST_ERROR, "Send log to server error");
 }

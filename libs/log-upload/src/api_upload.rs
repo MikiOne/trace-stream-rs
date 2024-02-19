@@ -1,54 +1,90 @@
 use reqwest::header;
-use reqwest::header::HeaderValue;
+use reqwest::header::{HeaderMap, HeaderValue};
 use serde::Serialize;
+use common::biz_code::BizCode;
+use common::biz_error::BizError;
 
-use common::log::info;
+use common::log::{error, info};
+use common::settings::RemoteServerConfig;
 
 use crate::http_client::ReqwestClient;
 
 #[derive(Serialize, Clone)]
-pub struct LogMsg {
-    mac_address: String,
-    wallet: String,
-    msg: Option<String>,
+pub struct LogBody {
+    server_name: String,
+    server_ip: String,
+    log_info: String,
 }
 
-// impl LogMsg {
-//     pub fn new(app: &AppInfo, msg: Option<String>) -> Self {
+// #[derive(Serialize, Clone)]
+// struct LogData {
+//     server_name: String,
+//     log_info: String,
+// }
+
+// impl LogData {
+//     pub fn new(server_name: String, log_info: String) -> Self {
 //         Self {
-//             mac_address: app.mac_address.to_owned(),
-//             wallet: app.public_key.to_owned(),
-//             msg,
+//             server_name,
+//             log_info,
 //         }
 //     }
 //
-//     fn to_json(&self) -> Result<String, CommonError> {
-//         Ok(serde_json::to_string(self)?)
+//     fn to_json(&self) -> Result<String, BizError> {
+//         serde_json::to_string(self).map_err(|err| {
+//             error!("LogData to json error: {:?}", err);
+//             BizError::new(BizCode::LOG_TO_JSON_STRING_ERROR)
+//         })
 //     }
-//
-//     pub async fn send_msg(&self) -> Result<(), CommonError> {
-//         let ser_url = SettingsCode::LogServerUrl.get_value().await;
-//         let error_uri = SettingsCode::LogErrorUri.get_value().await;
-//         let url = format!("{}{}", ser_url, error_uri);
-//
-//         let mut headers = build_logser_headers().await?;
-//         headers.insert(
-//             header::CONTENT_TYPE,
-//             HeaderValue::from_static("application/octet-stream"),
-//         );
-//
-//
-//         let client = ReqwestClient::build();
-//         let resp = client
-//             .put(url)
-//             .headers(headers)
-//             .body(self.to_json()?)
-//             .send()
-//             .await?;
-//
-//         info!("Send msg to server response.status: {}", resp.status());
-//         Ok(())
-//     }
+// }
+
+impl LogBody {
+    pub fn new(server_name: String, server_ip: String, log_info: String) -> Self {
+        Self {
+            server_name,
+            server_ip,
+            log_info,
+        }
+    }
+
+    fn to_json(&self) -> Result<String, BizError> {
+        serde_json::to_string(self).map_err(|err| {
+            error!("LogBody to json error: {:?}", err);
+            BizError::new(BizCode::LOG_TO_JSON_STRING_ERROR)
+        })
+    }
+}
+
+pub async fn send_log(ser_config: &RemoteServerConfig, log_body: &LogBody) -> Result<(), BizError> {
+    let domain = ser_config.get_server_domain();
+    let upload_uri = ser_config.get_upload_uri();
+    let url = if upload_uri.starts_with("/") {
+        format!("{}{}", domain, upload_uri)
+    } else {
+        format!("{}/{}", domain, upload_uri)
+    };
+
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        header::CONTENT_TYPE,
+        HeaderValue::from_static("application/octet-stream"),
+    );
+
+    let client = ReqwestClient::build();
+    let resp = client
+        .put(url)
+        .headers(headers)
+        .body(log_body.to_json()?)
+        .send()
+        .await.map_err(|err| {
+        error!("Send log to server error: {:?}", err);
+        BizError::new(BizCode::REQWEST_ERROR)
+    })?;
+
+    info!("Send msg to server response.status: {}", resp.status());
+    Ok(())
+}
+
 
 // pub async fn send_file_and_data(&self, filepath: &PathBuf) -> Result<(), CommonError> {
 //     info!("send_file_and_data filepath: {:?}", filepath);

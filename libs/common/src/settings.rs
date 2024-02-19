@@ -5,18 +5,18 @@ use serde_derive::Deserialize;
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(unused)]
-pub struct Eoplog {
+pub struct LogInfo {
     path: String,
-    ser_name: String,
+    server_name: String,
 }
 
-impl Eoplog {
+impl LogInfo {
     pub fn get_path(&self) -> &String {
         &self.path
     }
 
-    pub fn get_ser_name(&self) -> &String {
-        &self.ser_name
+    pub fn get_server_name(&self) -> &String {
+        &self.server_name
     }
 }
 
@@ -39,10 +39,24 @@ impl KafkaConfig {
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(unused)]
+pub struct RemoteServerConfig {
+    server_domain: String,
+    upload_uri: String,
+}
+
+impl RemoteServerConfig {
+    pub fn get_server_domain(&self) -> &String { &self.server_domain }
+    pub fn get_upload_uri(&self) -> &String { &self.upload_uri }
+}
+
+
+#[derive(Debug, Clone, Deserialize)]
+#[allow(unused)]
 pub struct Settings {
     debug: bool,
-    pub eoplogs: Vec<Eoplog>,
+    pub log_infos: Vec<LogInfo>,
     pub kafka_config: KafkaConfig,
+    pub remote_server: RemoteServerConfig,
 }
 
 impl Settings {
@@ -56,14 +70,6 @@ impl Settings {
 
         setting.try_deserialize()
     }
-
-    // pub fn get_eoplogs(self) -> Vec<Eoplog> {
-    //     self.eoplogs
-    // }
-    //
-    // pub fn get_kafka_config(self) -> KafkaConfig {
-    //     self.kafka_config
-    // }
 
     pub fn is_debug(&self) -> bool {
         self.debug

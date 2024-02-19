@@ -3,26 +3,31 @@ use std::sync::Arc;
 
 use common::anyhow::Result;
 use common::log::{error, info};
-use common::settings::Eoplog;
+use common::settings::{LogInfo, RemoteServerConfig};
+use log_upload::api_upload::{LogBody, send_log};
+use log_upload::http_client;
 
-pub fn init_monitor(eoplogs: Vec<Eoplog>) {
-    for eoplog in eoplogs {
+pub fn init_monitor(log_infos: Vec<LogInfo>, remote_server_config: RemoteServerConfig) {
+    for log_info in log_infos {
         // let path_buf = PathBuf::from(eoplog.get_path());
-        LogFileMonitor::new(&eoplog).unwrap().init_watcher();
-        info!("LogFileMonitor init success: {:?}", &eoplog)
+        LogInfoMonitor::new(&log_info, remote_server_config.to_owned()).unwrap().init_watcher();
+        info!("LogFileMonitor init success: {:?}", &log_info)
     }
 }
 
-pub struct LogFileMonitor(Rc<Eoplog>);
+pub struct LogInfoMonitor {
+    log_info: Rc<LogInfo>,
+    remote_server: Arc<RemoteServerConfig>,
+}
 
-impl LogFileMonitor {
-    pub fn new(eoplog: &Eoplog) -> Result<LogFileMonitor> {
-        Ok(LogFileMonitor(Rc::new(eoplog.to_owned())))
+impl LogInfoMonitor {
+    pub fn new(log_info: &LogInfo, remote_server_config: RemoteServerConfig) -> Result<LogInfoMonitor> {
+        Ok(LogInfoMonitor { log_info: Rc::new(log_info.to_owned()), remote_server: Arc::new(remote_server_config) })
     }
 
     // log watcher init
     pub fn init_watcher(&self) {
-        let rc_log = Rc::clone(&self.0);
+        let rc_log = Rc::clone(&self.log_info);
         let default_log = rc_log.get_path();
         let mut log_watcher = async_log_watcher::LogWatcher::new(default_log);
         let log_watcher_handle = log_watcher.spawn(true);
@@ -33,11 +38,11 @@ impl LogFileMonitor {
             }
         });
 
-        let ser_name = Arc::new(rc_log.get_ser_name().to_owned());
+        let ser_name = Arc::new(rc_log.get_server_name().to_owned());
         tokio::task::spawn(async move {
             while let Some(data) = log_watcher.read_message().await {
                 match std::str::from_utf8(&data) {
-                    Ok(data) => send_msg(data, Arc::clone(&ser_name)).await,
+                    Ok(data) => self.send_msg(data, Arc::clone(&ser_name)).await,
                     Err(err) => error!("read_message parse data error: {:?}", err),
                 }
             }
@@ -61,10 +66,16 @@ impl LogFileMonitor {
     //         }
     //     });
     // }
-}
 
-async fn send_msg(msg: &str, ser_name: Arc<String>) {
-    info!("Collection logs: file name[{:?}] \n{}", ser_name, msg)
+
+    async fn send_msg(&self, msg: &str, ser_name: Arc<String>) {
+        info!("Collection logs: file name[{:?}] \n{}", ser_name, msg);
+        let pub_ip = http_client::get_pub_ip_str();
+        let log_body = LogBody::new(ser_name.to_string(), pub_ip.to_string(), msg.to_string());
+
+        let remote_server = self.remote_server.as_ref();
+        send_log(remote_server, &log_body).await.expect("Watcher send msg to server error: ");
+    }
 }
 
 // async fn send_msg(msg: &str) {

@@ -5,7 +5,7 @@ use reqwest::{Client, ClientBuilder};
 use reqwest::blocking;
 use reqwest::header::HeaderMap;
 
-use common::log::warn;
+use common::log::{error, warn};
 
 use crate::errors::PubError;
 
@@ -47,10 +47,22 @@ pub fn get_public_ip() -> Result<IpAddr, PubError> {
     Ok(ip_addr)
 }
 
+pub fn get_pub_ip_str() -> String {
+    match get_public_ip() {
+        Ok(ip) => {
+            ip.to_string()
+        }
+        Err(err) => {
+            error!("Get public ip error: {:?}", err);
+            "".to_string()
+        }
+    }
+}
+
 #[test]
 fn test_get_pub_ip() {
     let ip = get_public_ip().unwrap();
-    println!("Public IP Address: {}", ip);
+    println!("Public IP Address: {ip}");
 }
 
 // pub fn get_http_proxy() -> Option<Proxy> {

@@ -9,13 +9,12 @@ edition = "2021"
 [workspace]
 members = [
     "libs/common",
-    "libs/log-publish"
+    "libs/log-upload"
 ]
 
 [dependencies]
 common = { version = "0.1.0", path = "libs/common" }
-log-publish = { version = "0.1.0", path = "libs/log-publish" }
-#log-publish2 = { version = "0.1.0", path = "libs/log-publish2" }
+log-upload = { version = "0.1.0", path = "libs/log-upload" }
 
 tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread", "macros", "net"] }
 async-log-watcher = "0.0.1"
