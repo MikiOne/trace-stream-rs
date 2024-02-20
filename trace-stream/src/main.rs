@@ -1,17 +1,18 @@
+pub mod log_monitor;
+
 use std::env;
 use axum::Router;
 use axum::routing;
 use tokio::net::TcpListener;
 // use msg_pub::kafka_client::KafkaPub;
 
-use trace_stream_rs::log_monitor;
 use common::settings::Settings;
 
 #[tokio::main]
 async fn main() {
     let config = Settings::new().expect("读取配置文件出错");
 
-    env::set_var("RUST_BACKTRACE", "    1");
+    env::set_var("RUST_BACKTRACE", "1");
     if config.is_debug() {
         env::set_var("RUST_LOG", "debug");
     } else {

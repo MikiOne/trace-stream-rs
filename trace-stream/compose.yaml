@@ -10,7 +10,7 @@
 services:
   server:
     build:
-      context: .
+      context: ..
       target: final
     ports:
       - 13000:13000
