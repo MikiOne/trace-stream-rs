@@ -13,7 +13,7 @@ pub struct RespData<T> {
 }
 
 impl<T> RespData<T> {
-    fn with_success(data: T) -> Self {
+    pub fn with_success(data: T) -> Self {
         let biz_code = BizCode::SUCCESS;
         let msg = biz_code.reason().unwrap().to_string();
         RespData { code: biz_code.code().to_string(), msg, data }
@@ -28,7 +28,13 @@ impl<T> RespData<T> {
     // }
 }
 
-// impl RespData<()> {
+impl RespData<()> {
+    pub fn success() -> Self {
+        let biz_code = BizCode::SUCCESS;
+        let msg = biz_code.reason().unwrap().to_string();
+        RespData { code: biz_code.code().to_string(), msg, data: {} }
+    }
+
 //     pub fn with_biz_code(biz_code: BizCode) -> HttpResponse {
 //         let msg = biz_code.reason().unwrap().to_string();
 //         let resp_data = RespData { code: biz_code.code().to_string(), msg, data: {} };
@@ -57,4 +63,4 @@ impl<T> RespData<T> {
 //             }
 //         }
 //     }
-// }
+}

@@ -26,7 +26,7 @@ async fn main() {
     // kafka_producer.produce("my-topic", "ni好友").await;
 
     let app = Router::new().route("/", routing::get(|| async {}));
-    let listener = TcpListener::bind("127.0.0.1:13000").await.expect("tcp port bind error");
+    let listener = TcpListener::bind("127.0.0.1:7201").await.expect("tcp port bind error");
     axum::serve(listener, app).await.expect("Axum server start error");
 }
 

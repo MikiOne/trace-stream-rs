@@ -1,20 +1,20 @@
 use reqwest::header;
 use reqwest::header::{HeaderMap, HeaderValue};
-use serde::Serialize;
+
 use common::biz_code::BizCode;
 use common::biz_error::BizError;
-
 use common::log::{error, info};
+use common::models::LogBody;
 use common::settings::RemoteServerConfig;
 
 use crate::http_client::ReqwestClient;
 
-#[derive(Serialize, Clone)]
-pub struct LogBody {
-    server_name: String,
-    server_ip: String,
-    log_info: String,
-}
+// #[derive(Serialize, Clone)]
+// pub struct LogBody {
+//     server_name: String,
+//     server_ip: String,
+//     log_info: String,
+// }
 
 // #[derive(Serialize, Clone)]
 // struct LogData {
@@ -38,22 +38,6 @@ pub struct LogBody {
 //     }
 // }
 
-impl LogBody {
-    pub fn new(server_name: String, server_ip: String, log_info: String) -> Self {
-        Self {
-            server_name,
-            server_ip,
-            log_info,
-        }
-    }
-
-    fn to_json(&self) -> Result<String, BizError> {
-        serde_json::to_string(self).map_err(|err| {
-            error!("LogBody to json error: {:?}", err);
-            BizError::new(BizCode::LOG_TO_JSON_STRING_ERROR)
-        })
-    }
-}
 
 pub async fn send_log(ser_config: &RemoteServerConfig, log_body: &LogBody) -> Result<(), BizError> {
     let domain = ser_config.get_server_domain();
