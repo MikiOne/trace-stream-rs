@@ -73,7 +73,7 @@ impl ConfigLog4rs {
         }
 
         log_panics::init();
-        Self::test_log_files();
+        // Self::test_log_files();
         Ok(())
     }
 

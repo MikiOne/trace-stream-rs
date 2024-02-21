@@ -1,9 +1,9 @@
 use log::error;
-use serde_derive::Serialize;
+use serde_derive::{Deserialize, Serialize};
 use crate::biz_code::BizCode;
 use crate::biz_error::BizError;
 
-#[derive(Serialize, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LogBody {
     server_name: String,
     server_ip: String,
