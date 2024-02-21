@@ -5,9 +5,9 @@ use crate::biz_error::BizError;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LogBody {
-    server_name: String,
-    server_ip: String,
-    log_info: String,
+    pub server_name: String,
+    pub server_ip: String,
+    pub log_info: String,
 }
 
 impl LogBody {
@@ -24,5 +24,9 @@ impl LogBody {
             error!("LogBody to json error: {:?}", err);
             BizError::new(BizCode::LOG_TO_JSON_STRING_ERROR)
         })
+    }
+
+    pub fn display(&self) -> String {
+        format!("[server:{}{}]: 「\n{}\n」", self.server_ip, self.server_name, self.log_info)
     }
 }

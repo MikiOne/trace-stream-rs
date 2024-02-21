@@ -24,7 +24,7 @@ impl ConfigLog4rs {
 
     pub fn init_config(&self) -> Result<()> {
         let default_path = self.0.join("default.log");
-        let error_path = self.0.join("error.log");
+        let remote_path = self.0.join("remote.log");
 
         let stdout = ConsoleAppender::builder()
             .encoder(Box::new(PatternEncoder::new(
@@ -32,38 +32,38 @@ impl ConfigLog4rs {
             )))
             .build();
 
-        let default_rolling_appender = get_rolling_appender(default_path)?;
-        let error_rolling_appender = get_rolling_appender(error_path)?;
+        // let default_rolling_appender = get_rolling_appender(default_path)?;
+        let remote_rolling_appender = get_rolling_appender(remote_path)?;
 
         let config = Config::builder()
             .appender(Appender::builder().build("stdout", Box::new(stdout)))
-            .appender(
-                Appender::builder()
-                    .filter(Box::new(ThresholdFilter::new(LevelFilter::Info)))
-                    .build("default_log_file", Box::new(default_rolling_appender)),
-            )
+            // .appender(
+            //     Appender::builder()
+            //         .filter(Box::new(ThresholdFilter::new(LevelFilter::Info)))
+            //         .build("default_log_file", Box::new(default_rolling_appender)),
+            // )
             .appender(
                 Appender::builder()
                     .filter(Box::new(ThresholdFilter::new(LevelFilter::Error)))
-                    .build("error_log_file", Box::new(error_rolling_appender)),
+                    .build("remote_log_file", Box::new(remote_rolling_appender)),
             )
+            // .logger(
+            //     Logger::builder()
+            //         .appender("default_log_file")
+            //         .additive(false)
+            //         .build("default", LevelFilter::Info),
+            // )
             .logger(
                 Logger::builder()
-                    .appender("default_log_file")
+                    .appender("remote_log_file")
                     .additive(false)
-                    .build("default", LevelFilter::Info),
-            )
-            .logger(
-                Logger::builder()
-                    .appender("error_log_file")
-                    .additive(false)
-                    .build("error", LevelFilter::Error),
+                    .build("remote", LevelFilter::Error),
             )
             .build(
                 Root::builder()
                     .appender("stdout")
-                    .appender("error_log_file")
-                    .appender("default_log_file")
+                    .appender("remote_log_file")
+                    // .appender("default_log_file")
                     .build(LevelFilter::Info),
             )?;
 
@@ -111,7 +111,7 @@ impl ConfigLog4rs {
 
 fn get_rolling_appender(log_path: PathBuf) -> Result<RollingFileAppender> {
     let window_size = 30;
-    let size_limit = 2;
+    let size_limit = 100;
 
     let size_m = byte_unit::n_mb_bytes!(size_limit) as u64;
     let size_trigger = SizeTrigger::new(size_m);
@@ -126,9 +126,14 @@ fn get_rolling_appender(log_path: PathBuf) -> Result<RollingFileAppender> {
     let compound_policy =
         CompoundPolicy::new(Box::new(size_trigger), Box::new(fixed_window_roller));
 
+    let encoder: PatternEncoder =
+        if log_path.display().to_string().contains("remote") {
+            PatternEncoder::new("{m}{n}")
+        } else {
+            PatternEncoder::new("[{d}] [{l}] [{P}:{T}:{I}] [{M}:{L}]:{m}{n}")
+        };
+
     Ok(RollingFileAppender::builder()
-        .encoder(Box::new(PatternEncoder::new(
-            "[{d}] [{l}] [{P}:{T}:{I}] [{M}:{L}]:{m}{n}",
-        )))
+        .encoder(Box::new(encoder))
         .build(log_path, Box::new(compound_policy))?)
 }

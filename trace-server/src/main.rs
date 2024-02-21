@@ -1,10 +1,11 @@
 use std::path::PathBuf;
 
-use log::info;
-use ntex::web::{App, HttpServer, middleware};
+use log::{error, info};
+use ntex::web::{App, HttpServer};
 use ntex::web;
 use ntex::web::{HttpResponse, Responder, ServiceConfig};
 use ntex::web::types::Json;
+use regex::Regex;
 
 use common::biz_resp::RespData;
 use common::models::LogBody;
@@ -23,7 +24,6 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
-            .wrap(middleware::Logger::default())
             .configure(config)
     })
         .bind(&bind)?
@@ -38,8 +38,22 @@ pub fn config(cfg: &mut ServiceConfig) {
 
 #[web::post("/collect")]
 pub async fn collect(
-    log_info: Json<LogBody>,
+    log: Json<LogBody>,
 ) -> Result<impl Responder, web::Error> {
-    info!("Json<LogBody>: {:?}", log_info.to_json().unwrap());
+    let header = format!("[{}:{}]", log.server_ip, log.server_name);
+    let mut lines = log.log_info.split("\n");
+    lines.by_ref().for_each(|line| {
+        if starts_with_date(line) {
+            error!("{} {}", header, line);
+        } else {
+            error!("{}", line);
+        }
+        // error!("{} {}", header, line);
+    });
     Ok(HttpResponse::Ok().json(&RespData::success()))
+}
+
+fn starts_with_date(s: &str) -> bool {
+    let date_regex = Regex::new(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}").unwrap();
+    date_regex.is_match(s)
 }
