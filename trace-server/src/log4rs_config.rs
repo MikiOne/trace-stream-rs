@@ -24,7 +24,7 @@ impl ConfigLog4rs {
 
     pub fn init_config(&self) -> Result<()> {
         let default_path = self.0.join("default.log");
-        let remote_path = self.0.join("remote.log");
+        let error_path = self.0.join("error.log");
 
         let stdout = ConsoleAppender::builder()
             .encoder(Box::new(PatternEncoder::new(
@@ -32,38 +32,38 @@ impl ConfigLog4rs {
             )))
             .build();
 
-        // let default_rolling_appender = get_rolling_appender(default_path)?;
-        let remote_rolling_appender = get_rolling_appender(remote_path)?;
+        let default_rolling_appender = get_rolling_appender(default_path)?;
+        let error_rolling_appender = get_rolling_appender(error_path)?;
 
         let config = Config::builder()
             .appender(Appender::builder().build("stdout", Box::new(stdout)))
-            // .appender(
-            //     Appender::builder()
-            //         .filter(Box::new(ThresholdFilter::new(LevelFilter::Info)))
-            //         .build("default_log_file", Box::new(default_rolling_appender)),
-            // )
+            .appender(
+                Appender::builder()
+                    .filter(Box::new(ThresholdFilter::new(LevelFilter::Info)))
+                    .build("default_log_file", Box::new(default_rolling_appender)),
+            )
             .appender(
                 Appender::builder()
                     .filter(Box::new(ThresholdFilter::new(LevelFilter::Error)))
-                    .build("remote_log_file", Box::new(remote_rolling_appender)),
+                    .build("error_log_file", Box::new(error_rolling_appender)),
             )
-            // .logger(
-            //     Logger::builder()
-            //         .appender("default_log_file")
-            //         .additive(false)
-            //         .build("default", LevelFilter::Info),
-            // )
             .logger(
                 Logger::builder()
-                    .appender("remote_log_file")
+                    .appender("default_log_file")
+                    .additive(false)
+                    .build("default", LevelFilter::Info),
+            )
+            .logger(
+                Logger::builder()
+                    .appender("error_log_file")
                     .additive(false)
                     .build("remote", LevelFilter::Error),
             )
             .build(
                 Root::builder()
                     .appender("stdout")
-                    .appender("remote_log_file")
-                    // .appender("default_log_file")
+                    .appender("error_log_file")
+                    .appender("default_log_file")
                     .build(LevelFilter::Info),
             )?;
 

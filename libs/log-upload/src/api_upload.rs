@@ -5,7 +5,7 @@ use common::biz_code::BizCode;
 use common::biz_error::BizError;
 use common::log::{error, info};
 use common::models::LogBody;
-use common::settings::RemoteServerConfig;
+use trace_stream::settings::RemoteServerConfig;
 
 use crate::http_client::ReqwestClient;
 

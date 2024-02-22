@@ -2,9 +2,9 @@ use std::rc::Rc;
 use std::sync::Arc;
 use tokio::sync::OnceCell;
 
-use common::anyhow::Result;
+use anyhow::Result;
 use common::log::{error, info};
-use common::settings::{LogInfo, RemoteServerConfig};
+use crate::settings::{LogInfo, RemoteServerConfig};
 use log_upload::api_upload::{LogBody, send_log};
 use log_upload::http_client;
 
