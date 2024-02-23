@@ -46,7 +46,9 @@ macro_rules! biz_codes {
 biz_codes! {
     ("000000", SUCCESS, "Success");
     ("000001", SYSTEM_ERROR, "System error");
+    // Bcrypt
     ("BE0001", BCRYPT_ERROR, "Bcrypt error");
+    // auth
     ("AU0001", WRONG_CREDENTIALS, "wrong credentials");
     ("AU0002", JWT_INVALID, "jwt token not valid");
     ("AU0003", JWT_CREATION_ERR, "jwt token creation error");
@@ -56,9 +58,13 @@ biz_codes! {
     ("AU0007", LOGOUT_SUCCESS, "Logout success");
     ("AU0008", LOGIN_UID_ERR, "Login uid incorrect");
     ("AU0009", LOGIN_PWD_ERR, "Login password incorrect");
+    // database
     ("DB0001", DATABASE_ERROR, "Database error");
     ("ORM001", DIESEL_ERROR, "Diesel error");
+    // user
     ("UR0001", USER_NOT_FOUND, "User not found");
+    // log
     ("LG0001", LOG_TO_JSON_STRING_ERROR, "LogBody to json string error");
+    // network
     ("NET001", REQWEST_ERROR, "Send log to server error");
 }

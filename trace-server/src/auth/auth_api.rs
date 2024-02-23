@@ -15,21 +15,36 @@ use crate::auth::models::{LoginUser, Role};
 pub async fn login(
     login_user: Json<LoginUser>,
 ) -> Result<impl Responder, web::Error> {
+    info!("login user: {:?}", &login_user);
+
     if login_user.uid != AUTH_UID {
         return Ok(HttpResponse::Ok().json(&RespData::with_biz_code(BizCode::LOGIN_UID_ERR)));
     }
-    if bcrypt_verify(&login_user.pwd_md5, &PWD_BCRYPT_HASH).is_err() {
-        return Ok(HttpResponse::Ok().json(&RespData::with_biz_code(BizCode::LOGIN_PWD_ERR)));
-    }
+    let verify_result = bcrypt_verify(&login_user.pwd_md5, &PWD_BCRYPT_HASH);
+    info!("bcrypt_verify result: {:?}", verify_result);
 
-    match jwt_handler::create_jwt(login_user.uid.to_owned(), &Role::User) {
-        Ok(token) => {
-            info!("login token info: {:?}", token);
-            Ok(HttpResponse::Ok().json(&RespData::with_success(token)))
+    let create_token = || {
+        match jwt_handler::create_jwt(login_user.uid.to_owned(), &Role::User) {
+            Ok(token) => {
+                info!("login token info: {:?}", token);
+                Ok(HttpResponse::Ok().json(&RespData::with_success(token)))
+            }
+            Err(err) => {
+                error!("login error: {:?}", &err);
+                Ok(HttpResponse::Ok().json(&RespData::from_biz_error(&err)))
+            }
+        }
+    };
+
+    match verify_result {
+        Ok(val) => {
+            if val { create_token() } else {
+                Ok(HttpResponse::Ok().json(&RespData::with_biz_code(BizCode::LOGIN_PWD_ERR)))
+            }
         }
         Err(err) => {
-            error!("login error: {:?}", &err);
-            Ok(HttpResponse::Ok().json(&RespData::from_biz_error(&err)))
+            error!("bcrypt_verify error: {:?}", &err);
+            Ok(HttpResponse::Ok().json(&RespData::with_biz_code(BizCode::LOGIN_PWD_ERR)))
         }
     }
 }

@@ -15,7 +15,9 @@ use crate::auth::auth_consts::{BEARER, JWT_SECRET};
 pub fn create_jwt(uid: String, role: &Role) -> BizResult<TokenInfo> {
     // 用于创建JWT，参数为用户ID和角色
     let expiration = Utc::now()
-        .checked_add_signed(chrono::Duration::seconds(120))
+        // JWT过期时间为2天
+        .checked_add_signed(chrono::Duration::days(2))
+        // .checked_add_signed(chrono::Duration::seconds(120))
         .expect("valid timestamps")
         .timestamp();
 
