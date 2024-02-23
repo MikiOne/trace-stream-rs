@@ -7,7 +7,6 @@ use ntex::web::{FromRequest, HttpRequest};
 use common::biz_code::BizCode;
 use common::biz_error::BizError;
 use crate::auth::auth_consts::JWT_USER;
-
 use crate::auth::models::SlimUser;
 
 pub type LoggedUser = SlimUser;

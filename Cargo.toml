@@ -8,16 +8,17 @@ edition = "2021"
 
 [workspace]
 members = [
-    "libs/common",
-    "libs/log-upload",
-    "trace-stream-axum",
-    "trace-server",
+    "componets/ntex-auth",
+    "componets/common",
+    "componets/log-upload",
+    #    "trace-stream-axum",
+    "trace-server", "trace-stream",
 ]
 
 [[bin]]
 name = "trace-stream"
-path = "trace-stream-axum/src/main.rs"
+path = "trace-stream/src/main.rs"
 
 [[bin]]
 name = "trace-server"
-path= "trace-server/src/main.rs"
+path = "trace-server/src/main.rs"

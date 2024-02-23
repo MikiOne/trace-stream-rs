@@ -6,6 +6,7 @@ pub mod models;
 pub mod data_utils;
 pub mod file_utils;
 pub mod hash_utils;
+pub mod log4rs_config;
 
 pub extern crate log;
 pub extern crate env_logger;

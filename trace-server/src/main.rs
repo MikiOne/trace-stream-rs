@@ -1,21 +1,17 @@
 use std::path::PathBuf;
-
 use log::info;
 use ntex::web::{App, HttpServer};
 use ntex::web;
 use ntex::web::{Responder, ServiceConfig};
-
-use crate::auth::auth_api;
-use crate::log4rs_config::ConfigLog4rs;
-use crate::trace::store_compress::init_store_path;
-use crate::trace::trace_api;
-use crate::middleware::auth_filter;
+use common::log4rs_config::ConfigLog4rs;
+use ntex_auth::auth::auth_api;
+use ntex_auth::middleware::auth_filter;
 use crate::settings::Settings;
+use crate::trace::store_compress::init_store_path;
 
-mod log4rs_config;
+use crate::trace::trace_api;
+
 mod settings;
-mod auth;
-mod middleware;
 mod trace;
 
 #[ntex::main]

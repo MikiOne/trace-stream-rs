@@ -4,11 +4,9 @@ use ntex::http::header::{HeaderName, HeaderValue};
 use ntex::service::{Middleware, Service, ServiceCtx};
 use ntex::ServiceCall;
 use ntex::web::{Error, ErrorRenderer, HttpResponse, WebRequest, WebResponse};
-use common::biz_code::BizCode;
 
 use common::biz_resp::RespData;
 use crate::auth::auth_consts::JWT_USER;
-
 use crate::auth::jwt_handler;
 
 

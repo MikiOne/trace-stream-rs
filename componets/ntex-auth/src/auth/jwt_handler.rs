@@ -5,11 +5,11 @@ use log::{debug, error, info};
 use ntex::http::header::AUTHORIZATION;
 use ntex::http::HeaderMap;
 
-use crate::auth::models::{Claims, Role, SlimUser, TokenInfo};
 use common::biz_code::BizCode;
 use common::biz_error::BizError;
 use common::biz_resp::BizResult;
 use crate::auth::auth_consts::{BEARER, JWT_SECRET};
+use crate::auth::models::{Claims, Role, SlimUser, TokenInfo};
 
 
 pub fn create_jwt(uid: String, role: &Role) -> BizResult<TokenInfo> {

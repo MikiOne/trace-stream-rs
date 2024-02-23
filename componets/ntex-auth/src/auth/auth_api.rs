@@ -6,10 +6,10 @@ use ntex::web::types::Json;
 use common::biz_code::BizCode;
 use common::biz_resp::RespData;
 use common::hash_utils::bcrypt_verify;
-
 use crate::auth::auth_consts::{AUTH_UID, PWD_BCRYPT_HASH};
 use crate::auth::jwt_handler;
 use crate::auth::models::{LoginUser, Role};
+
 
 #[web::post("/auth/token")]
 pub async fn login(
