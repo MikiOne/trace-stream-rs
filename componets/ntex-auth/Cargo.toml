@@ -1,0 +1,18 @@
+[package]
+name = "ntex-auth"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+common = { version = "0.1.0", path = "../common" }
+
+ntex = { version = "0.7.8", features = ["tokio"] }
+ntex-bytes = "0.1.21"
+jsonwebtoken = "9.1.0"
+futures = "0.3.29"
+log = "0.4.20"
+chrono = { version = "0.4.31", features = [] }
+serde = { version = "1.0.196", features = ["derive"] }
+serde_json = "1.0.114"
