@@ -11,8 +11,8 @@ members = [
     "componets/ntex-auth",
     "componets/common",
     "componets/log-upload",
-    #    "trace-stream-axum",
-    "trace-server", "trace-stream",
+    "trace-server",
+    "trace-stream",
 ]
 
 [[bin]]

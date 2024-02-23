@@ -109,7 +109,7 @@ fn compress_file(logfile: &PathBuf) {
     let mut input_file = File::open(logfile).expect("打开待压缩的文件");
 
     // 创建一个写文件操作，以写入压缩的数据
-    let output_file = File::create(output_path).expect("创建文件失败");
+    let output_file = File::create(output_path).expect("创建压缩文件失败");
 
     // 创建Gz编码器，用于压缩数据。
     let mut encoder = GzEncoder::new(output_file, Compression::default());

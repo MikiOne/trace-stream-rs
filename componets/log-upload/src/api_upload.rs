@@ -5,9 +5,9 @@ use common::biz_code::BizCode;
 use common::biz_error::BizError;
 use common::log::{error, info};
 use common::models::LogBody;
-use trace_stream::settings::RemoteServerConfig;
 
 use crate::http_client::ReqwestClient;
+use crate::settings::RemoteServerConfig;
 
 // #[derive(Serialize, Clone)]
 // pub struct LogBody {
