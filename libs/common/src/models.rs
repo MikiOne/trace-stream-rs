@@ -29,7 +29,7 @@ impl LogBody {
         })
     }
 
-    pub fn display(&self) -> String {
-        format!("[server:{}{}]: 「\n{}\n」", self.server_ip, self.server_name, self.log_info)
+    pub fn print_base(&self) -> String {
+        format!("day[{}] server[{}:{}]", self.log_day, self.server_ip, self.server_name)
     }
 }

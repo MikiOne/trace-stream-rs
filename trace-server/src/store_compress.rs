@@ -100,9 +100,14 @@ fn compress_old_file(log: &LogBody) {
 }
 
 fn compress_file(logfile: &PathBuf) {
+    if !logfile.exists() {
+        warn!("压缩前一天的日志文件不存在: {}", logfile.display());
+        return;
+    }
+
     let output_path = format!("{}.gz", logfile.display());
     // 打开待压缩的文件
-    let mut input_file = File::open(logfile).expect("打开文件失败");
+    let mut input_file = File::open(logfile).expect("打开待压缩的文件");
 
     // 创建一个写文件操作，以写入压缩的数据
     let output_file = File::create(output_path).expect("创建文件失败");
