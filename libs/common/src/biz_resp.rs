@@ -35,24 +35,20 @@ impl RespData<()> {
         RespData { code: biz_code.code().to_string(), msg, data: {} }
     }
 
-//     pub fn with_biz_code(biz_code: BizCode) -> HttpResponse {
-//         let msg = biz_code.reason().unwrap().to_string();
-//         let resp_data = RespData { code: biz_code.code().to_string(), msg, data: {} };
-//         HttpResponse::Ok().json(&resp_data)
-//     }
-//
-//     pub fn with_biz_code_err(biz_code: BizCode, err: &String) -> HttpResponse {
-//         let msg = biz_code.reason().unwrap().to_string();
-//         let err_msg = format!("{}: {}", msg, err);
-//         let resp_data = RespData { code: biz_code.code().to_string(), msg: err_msg, data: {} };
-//         HttpResponse::Ok().json(&resp_data)
-//     }
-//
-//     pub fn from_biz_error(biz_error: &BizError) -> HttpResponse {
-//         let resp_data =
-//             RespData { code: biz_error.biz_code.to_string(), msg: biz_error.to_string(), data: {} };
-//         HttpResponse::Ok().json(&resp_data)
-//     }
+    pub fn with_biz_code(biz_code: BizCode) -> Self {
+        let msg = biz_code.reason().unwrap().to_string();
+        RespData { code: biz_code.code().to_string(), msg, data: {} }
+    }
+
+    pub fn with_biz_code_err(biz_code: BizCode, err: &String) -> Self {
+        let msg = biz_code.reason().unwrap().to_string();
+        let err_msg = format!("{}: {}", msg, err);
+        RespData { code: biz_code.code().to_string(), msg: err_msg, data: {} }
+    }
+
+    pub fn from_biz_error(biz_error: &BizError) -> Self {
+            RespData { code: biz_error.biz_code.to_string(), msg: biz_error.to_string(), data: {} }
+    }
 //
 //     pub fn with_blocking_err(blocking_err: BlockingError<BizError>) -> HttpResponse {
 //         match blocking_err {

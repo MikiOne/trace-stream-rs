@@ -46,13 +46,16 @@ macro_rules! biz_codes {
 biz_codes! {
     ("000000", SUCCESS, "Success");
     ("000001", SYSTEM_ERROR, "System error");
+    ("BE0001", BCRYPT_ERROR, "Bcrypt error");
     ("AU0001", WRONG_CREDENTIALS, "wrong credentials");
     ("AU0002", JWT_INVALID, "jwt token not valid");
     ("AU0003", JWT_CREATION_ERR, "jwt token creation error");
     ("AU0004", LOGIN_TIMEOUT, "Login timeout");
-    ("AU0005", INVALID_AUTH_HEADER, "invalid auth header");
+    ("AU0005", INVALID_AUTH_HEADER, "invalid auth2 header");
     ("AU0006", NO_PERMISSION, "no permission");
     ("AU0007", LOGOUT_SUCCESS, "Logout success");
+    ("AU0008", LOGIN_UID_ERR, "Login uid incorrect");
+    ("AU0009", LOGIN_PWD_ERR, "Login password incorrect");
     ("DB0001", DATABASE_ERROR, "Database error");
     ("ORM001", DIESEL_ERROR, "Diesel error");
     ("UR0001", USER_NOT_FOUND, "User not found");

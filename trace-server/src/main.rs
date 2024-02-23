@@ -1,22 +1,22 @@
 use std::path::PathBuf;
 
-use log::{error, info};
+use log::info;
 use ntex::web::{App, HttpServer};
 use ntex::web;
-use ntex::web::{HttpResponse, Responder, ServiceConfig};
-use ntex::web::types::Json;
-use regex::Regex;
+use ntex::web::{Responder, ServiceConfig};
 
-use common::biz_resp::RespData;
-use common::models::LogBody;
-
+use crate::auth::auth_api;
 use crate::log4rs_config::ConfigLog4rs;
+use crate::trace::store_compress::init_store_path;
+use crate::trace::trace_api;
+use crate::middleware::auth_filter;
 use crate::settings::Settings;
-use crate::store_compress::{init_store_path, store};
 
-pub mod log4rs_config;
-mod store_compress;
+mod log4rs_config;
 mod settings;
+mod auth;
+mod middleware;
+mod trace;
 
 #[ntex::main]
 async fn main() -> std::io::Result<()> {
@@ -31,37 +31,11 @@ async fn main() -> std::io::Result<()> {
     info!("Starting server at: {}", &bind);
 
     HttpServer::new(move || {
-        App::new().configure(ser_config)
+        App::new().wrap(auth_filter::JwtFilter).configure(ser_config)
     }).bind(&bind)?.run().await
 }
 
 /// api入口
 pub fn ser_config(cfg: &mut ServiceConfig) {
-    cfg.service(web::scope("/api/trace").service((collect, )));
+    cfg.service(web::scope("/api").service((auth_api::login, trace_api::store_log)));
 }
-
-#[web::post("/collect")]
-pub async fn collect(
-    log: Json<LogBody>,
-) -> Result<impl Responder, web::Error> {
-    store(&log);
-    info!("Logs saved successfully: {}", log.print_base());
-    Ok(HttpResponse::Ok().json(&RespData::success()))
-}
-
-// #[web::post("/collect")]
-// pub async fn collect(
-//     log: Json<LogBody>,
-// ) -> Result<impl Responder, web::Error> {
-//     let header = format!("[{}:{}]", log.server_ip, log.server_name);
-//     let mut lines = log.log_info.split("\n");
-//     lines.by_ref().for_each(|line| {
-//         if starts_with_date(line) {
-//             error!("{} {}", header, line);
-//         } else {
-//             error!("{}", line);
-//         }
-//         // error!("{} {}", header, line);
-//     });
-//     Ok(HttpResponse::Ok().json(&RespData::success()))
-// }

@@ -14,7 +14,6 @@ use common::models::LogBody;
 pub static STORE_PATH: OnceCell<PathBuf> = OnceCell::const_new();
 
 pub async fn init_store_path(path: &PathBuf) {
-    // STORE_PATH.get_or_init(|| path.to_owned());
     STORE_PATH.get_or_init(|| async { path.to_owned() }).await;
 }
 

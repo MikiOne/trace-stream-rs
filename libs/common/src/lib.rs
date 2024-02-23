@@ -5,6 +5,7 @@ mod ip_util;
 pub mod models;
 pub mod data_utils;
 pub mod file_utils;
+pub mod hash_utils;
 
 pub extern crate log;
 pub extern crate env_logger;
