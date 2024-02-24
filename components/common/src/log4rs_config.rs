@@ -39,7 +39,7 @@ impl ConfigLog4rs {
             .appender(Appender::builder().build("stdout", Box::new(stdout)))
             .appender(
                 Appender::builder()
-                    .filter(Box::new(ThresholdFilter::new(LevelFilter::Info)))
+                    .filter(Box::new(ThresholdFilter::new(LevelFilter::Debug)))
                     .build("default_log_file", Box::new(default_rolling_appender)),
             )
             .appender(

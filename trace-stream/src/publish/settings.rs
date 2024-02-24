@@ -10,6 +10,14 @@ pub struct LogInfo {
     server_name: String,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+#[allow(unused)]
+pub struct StaticOauth {
+    pub auth_uid: String,
+    pub pwd_md5: String,
+    pub pwd_bcrypt_hash: String,
+}
+
 impl LogInfo {
     pub fn get_path(&self) -> &String {
         &self.path
@@ -42,11 +50,29 @@ impl KafkaConfig {
 pub struct RemoteServerConfig {
     server_domain: String,
     upload_uri: String,
+    auth_uri: String,
 }
 
 impl RemoteServerConfig {
-    pub fn get_server_domain(&self) -> &String { &self.server_domain }
-    pub fn get_upload_uri(&self) -> &String { &self.upload_uri }
+    pub fn get_server_domain(&self) -> &String {
+        &self.server_domain
+    }
+
+    pub fn get_upload_uri(&self) -> String {
+        self.with_domain(&self.upload_uri)
+    }
+
+    pub fn get_auth_uri(&self) -> String {
+        self.with_domain(&self.auth_uri)
+    }
+
+    fn with_domain(&self, uri: &String) -> String {
+        if uri.starts_with("/") {
+            format!("{}{}", self.server_domain, uri)
+        } else {
+            format!("{}/{}", self.server_domain, uri)
+        }
+    }
 }
 
 
@@ -58,6 +84,8 @@ pub struct Settings {
     pub log_infos: Vec<LogInfo>,
     pub kafka_config: KafkaConfig,
     pub remote_server: RemoteServerConfig,
+
+    pub static_oauth: StaticOauth,
 }
 
 impl Settings {

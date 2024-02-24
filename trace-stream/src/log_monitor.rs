@@ -8,12 +8,10 @@ use common::models::LogBody;
 use crate::publish::api_upload::{send_log};
 use crate::publish::http_client;
 use crate::publish::settings::{LogInfo, RemoteServerConfig};
+use crate::publish::setup::REMOTE_SERVER;
 
-pub static REMOTE_SERVER: OnceCell<RemoteServerConfig> = OnceCell::const_new();
 
-pub async fn init_monitor(log_infos: Vec<LogInfo>, remote_server_config: RemoteServerConfig) {
-    REMOTE_SERVER.get_or_init(|| async { remote_server_config.to_owned() }).await;
-
+pub async fn init_monitor(log_infos: Vec<LogInfo>) {
     for log_info in log_infos {
         // let path_buf = PathBuf::from(eoplog.get_path());
         LogInfoMonitor::new(&log_info).unwrap().init_watcher();

@@ -17,13 +17,14 @@ tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread", "macros", "ne
 async-log-watcher = "0.0.1"
 
 rdkafka = { version = "0.36.2" }
-reqwest = { version = "0.11.24", features = ["multipart", "blocking"] }
+reqwest = { version = "0.11.24", features = ["multipart", "json"] }
 lapin = { version = "2.3.1" }
 futures-lite = "2.2.0"
 async-global-executor = "2.4.1"
 thiserror = "1.0.57"
 config = "0.14.0"
 serde_derive = "1.0.196"
+#log = "0.4.20"
 
 [dev-dependencies]
 tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread", "macros", "net"] }
