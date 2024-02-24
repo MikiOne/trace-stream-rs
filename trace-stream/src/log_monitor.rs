@@ -5,9 +5,9 @@ use tokio::sync::OnceCell;
 use anyhow::Result;
 use common::log::{error, info};
 use common::models::LogBody;
-use log_upload::api_upload::{send_log};
-use log_upload::http_client;
-use log_upload::settings::{LogInfo, RemoteServerConfig};
+use crate::publish::api_upload::{send_log};
+use crate::publish::http_client;
+use crate::publish::settings::{LogInfo, RemoteServerConfig};
 
 pub static REMOTE_SERVER: OnceCell<RemoteServerConfig> = OnceCell::const_new();
 

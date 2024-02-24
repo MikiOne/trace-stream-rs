@@ -6,7 +6,7 @@ use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::util::Timeout;
 
 use common::log::{debug, error, info};
-use trace_stream::settings::KafkaConfig;
+use crate::publish::settings::KafkaConfig;
 
 #[cfg(feature = "kafka")]
 pub struct KafkaPub(FutureProducer);

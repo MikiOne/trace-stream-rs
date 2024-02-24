@@ -5,11 +5,12 @@ use ntex::web::{App, HttpServer, ServiceConfig};
 
 use common::log4rs_config::ConfigLog4rs;
 use common::log::info;
-use log_upload::settings::Settings;
 use ntex_auth::auth::auth_api;
 use ntex_auth::middleware::auth_filter;
+use crate::publish::settings::Settings;
 
 mod log_monitor;
+mod publish;
 
 #[ntex::main]
 async fn main() -> std::io::Result<()> {

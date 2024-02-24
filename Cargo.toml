@@ -10,7 +10,6 @@ edition = "2021"
 members = [
     "components/ntex-auth",
     "components/common",
-    "components/log-upload",
     "trace-server",
     "trace-stream",
 #    "trace-stream-axum",

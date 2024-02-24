@@ -6,7 +6,7 @@ use reqwest::header::HeaderMap;
 
 use common::log::{error, warn};
 
-use crate::errors::PubError;
+use crate::publish::errors::PubError;
 
 pub struct ReqwestClient;
 
