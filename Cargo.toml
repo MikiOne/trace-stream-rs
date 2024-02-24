@@ -8,9 +8,9 @@ edition = "2021"
 
 [workspace]
 members = [
-    "componets/ntex-auth",
-    "componets/common",
-    "componets/log-upload",
+    "components/ntex-auth",
+    "components/common",
+    "components/log-upload",
     "trace-server",
     "trace-stream",
 #    "trace-stream-axum",
