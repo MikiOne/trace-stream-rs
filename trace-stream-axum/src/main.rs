@@ -1,13 +1,12 @@
 pub mod log_monitor;
-pub mod settings;
 
 use std::env;
 use axum::Router;
 use axum::routing;
 use tokio::net::TcpListener;
+use log_upload::settings::Settings;
 // use msg_pub::kafka_client::KafkaPub;
 
-use settings::Settings;
 
 #[tokio::main]
 async fn main() {

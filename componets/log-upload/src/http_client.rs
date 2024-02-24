@@ -2,7 +2,6 @@ use std::net::IpAddr;
 use std::time::Duration;
 
 use reqwest::{Client, ClientBuilder};
-use reqwest::blocking;
 use reqwest::header::HeaderMap;
 
 use common::log::{error, warn};
@@ -38,17 +37,17 @@ impl ReqwestClient {
     }
 }
 
-pub fn get_public_ip() -> Result<IpAddr, PubError> {
-    let client = blocking::Client::new();
-    let response = client.get("https://api.ipify.org").send()?;
-    let ip = response.text()?;
+pub async fn get_public_ip() -> Result<IpAddr, PubError> {
+    let client = Client::new();
+    let response = client.get("https://api.ipify.org").send().await?;
+    let ip = response.text().await?;
     let ip_addr: IpAddr = ip.trim().parse()?;
 
     Ok(ip_addr)
 }
 
-pub fn get_pub_ip_str() -> String {
-    match get_public_ip() {
+pub async fn get_pub_ip_str() -> String {
+    match get_public_ip().await {
         Ok(ip) => {
             ip.to_string()
         }

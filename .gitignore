@@ -4,3 +4,4 @@
 Cargo.lock
 /._target/
 */logs/
+/data/

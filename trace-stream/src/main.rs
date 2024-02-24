@@ -1,10 +1,12 @@
 use std::path::PathBuf;
+use ntex::web;
 
-use ntex::web::{App, HttpServer};
+use ntex::web::{App, HttpServer, ServiceConfig};
 
 use common::log4rs_config::ConfigLog4rs;
 use common::log::info;
 use log_upload::settings::Settings;
+use ntex_auth::auth::auth_api;
 use ntex_auth::middleware::auth_filter;
 
 mod log_monitor;
@@ -20,6 +22,11 @@ async fn main() -> std::io::Result<()> {
     info!("Starting server at: {}", &bind);
 
     HttpServer::new(move || {
-        App::new().wrap(auth_filter::JwtFilter)
+        App::new().wrap(auth_filter::JwtFilter).configure(ser_config)
     }).bind(&bind)?.run().await
+}
+
+/// api入口
+pub fn ser_config(cfg: &mut ServiceConfig) {
+    cfg.service(web::scope("/api").service((auth_api::login,)));
 }

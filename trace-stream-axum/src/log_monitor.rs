@@ -4,9 +4,10 @@ use tokio::sync::OnceCell;
 
 use anyhow::Result;
 use common::log::{error, info};
-use crate::settings::{LogInfo, RemoteServerConfig};
-use log_upload::api_upload::{LogBody, send_log};
+use common::models::LogBody;
+use log_upload::api_upload::send_log;
 use log_upload::http_client;
+use log_upload::settings::{LogInfo, RemoteServerConfig};
 
 pub static REMOTE_SERVER: OnceCell<RemoteServerConfig> = OnceCell::const_new();
 
@@ -74,7 +75,7 @@ impl LogInfoMonitor {
 
 async fn send_msg(msg: &str, ser_name: Arc<String>) {
     info!("Collection logs: file name[{:?}] \n{}", ser_name, msg);
-    let pub_ip = http_client::get_pub_ip_str();
+    let pub_ip = http_client::get_pub_ip_str().await;
     let log_body = LogBody::new(ser_name.to_string(), pub_ip.to_string(), msg.to_string());
 
     match REMOTE_SERVER.get() {

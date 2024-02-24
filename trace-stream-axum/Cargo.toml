@@ -1,5 +1,5 @@
 [package]
-name = "trace-stream"
+name = "trace-stream-axum"
 version = "0.1.0"
 edition = "2021"
 

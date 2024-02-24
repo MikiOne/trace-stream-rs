@@ -75,7 +75,7 @@ impl LogInfoMonitor {
 
 async fn send_msg(msg: &str, ser_name: Arc<String>) {
     info!("Collection logs: file name[{:?}] \n{}", ser_name, msg);
-    let pub_ip = http_client::get_pub_ip_str();
+    let pub_ip = http_client::get_pub_ip_str().await;
     let log_body = LogBody::new(ser_name.to_string(), pub_ip.to_string(), msg.to_string());
 
     match REMOTE_SERVER.get() {
