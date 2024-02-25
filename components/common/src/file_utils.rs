@@ -17,7 +17,7 @@ pub fn create_dir(dir_path: &Path) {
     if !dir_path.exists() {
         let dir = dir_path.to_str().unwrap();
         match fs::create_dir_all(dir_path) {
-            Ok(file) => info!("dir {:?} created", file),
+            Ok(_) => info!("dir {:?} created", dir_path.to_str()),
             Err(error) => error!("create {} dir error: {}", dir, error),
         }
     }

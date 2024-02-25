@@ -4,11 +4,12 @@ use std::path::PathBuf;
 
 use flate2::Compression;
 use flate2::write::GzEncoder;
-use log::{error, warn};
+use log::{debug, error, info, warn};
 use regex::Regex;
 use tokio::sync::OnceCell;
 
 use common::data_utils::to_previous_day;
+use common::file_utils::create_dir;
 use common::models::LogBody;
 
 pub static STORE_PATH: OnceCell<PathBuf> = OnceCell::const_new();
@@ -19,26 +20,29 @@ pub async fn init_store_path(path: &PathBuf) {
 
 fn starts_with_date(s: &str) -> bool {
     let date_regex = Regex::new(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}").unwrap();
-    date_regex.is_match(s)
+    let date_s_regex = Regex::new(r"^\[\d{4}-\d{2}-\d{2}").unwrap();
+    let date_t_regex = Regex::new(r"^\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}").unwrap();
+    date_regex.is_match(s) || date_s_regex.is_match(s) || date_t_regex.is_match(s)
 }
 
 pub fn store(log: &LogBody) {
     let store_path = STORE_PATH.get().unwrap();
-    let filename = format!("{}/{}-{}.log", log.project_name, log.server_name, log.log_day);
+    debug!("日志存储路径: {}", store_path.display());
+    let store_path = store_path.join(format!("{}/", log.project_name));
+
+    debug!("日志存储目录: {}", store_path.display() );
+    // 创建目录
+    create_dir(store_path.as_path());
+
+    let filename = format!("{}-{}.log", log.server_name, log.log_day);
+    debug!("日志文件: {}", filename);
     let logfile = store_path.join(filename);
 
     let header = format!("[{}:{}]", log.server_ip, log.server_name);
     let mut lines = log.log_info.split("\n");
-    // let mut log_lines = Vec::new();
-    // lines.by_ref().for_each(|line| {
-    //     if starts_with_date(line) {
-    //         log_lines.push(format!("{} {}", header, line))
-    //     } else {
-    //         log_lines.push(format!("{}", line))
-    //     }
-    // });
     let log_lines: Vec<String> = lines
-        .map(|line| if starts_with_date(line) { format!("{} {}", header, line) } else { line.to_string() })
+        .map(|line| if starts_with_date(line)
+        { format!("{} {}", header, line) } else { line.to_string() })
         .collect();
 
     if logfile.exists() {
@@ -79,13 +83,16 @@ fn write_with_create(logfile: &PathBuf, log_lines: Vec<String>) {
 fn writeln(file: File, log_lines: Vec<String>) {
     let mut writer = BufWriter::new(file);
     for line in log_lines {
-        writeln!(writer, "{}", line).unwrap();
+        if line.len() > 0 {
+            writeln!(writer, "{}", line).unwrap();
+        }
     }
     writer.flush().unwrap();
 }
 
 fn compress_old_file(log: &LogBody) {
-    let store_path = STORE_PATH.get().unwrap();
+    let store_path = STORE_PATH.get().unwrap()
+        .join(format!("{}/", log.project_name));
     let pre_day = to_previous_day(log.log_day.as_str());
     match pre_day {
         Some(pre_day) => {

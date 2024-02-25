@@ -10,7 +10,6 @@ use ntex_auth::auth::auth_api;
 use ntex_auth::middleware::auth_filter;
 
 use crate::settings::Settings;
-use crate::trace::store_compress::init_store_path;
 use crate::trace::trace_api;
 
 mod settings;
