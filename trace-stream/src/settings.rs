@@ -2,25 +2,9 @@ use std::env;
 
 use config::{Config, ConfigError, File};
 use serde_derive::Deserialize;
+use common::models::LogInfo;
 use ntex_auth::StaticOauth;
 
-#[derive(Debug, Clone, Deserialize)]
-#[allow(unused)]
-pub struct LogInfo {
-    path: String,
-    server_name: String,
-}
-
-
-impl LogInfo {
-    pub fn get_path(&self) -> &String {
-        &self.path
-    }
-
-    pub fn get_server_name(&self) -> &String {
-        &self.server_name
-    }
-}
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(unused)]

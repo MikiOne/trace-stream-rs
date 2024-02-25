@@ -24,7 +24,7 @@ fn starts_with_date(s: &str) -> bool {
 
 pub fn store(log: &LogBody) {
     let store_path = STORE_PATH.get().unwrap();
-    let filename = format!("{}-{}.log", log.server_name, log.log_day);
+    let filename = format!("{}/{}-{}.log", log.project_name, log.server_name, log.log_day);
     let logfile = store_path.join(filename);
 
     let header = format!("[{}:{}]", log.server_ip, log.server_name);

@@ -8,11 +8,11 @@ use common::log::info;
 use ntex_auth::auth::auth_api;
 use ntex_auth::middleware::auth_filter;
 
-use crate::publish::settings::Settings;
 
 mod log_monitor;
 mod publish;
 pub mod setup;
+pub mod settings;
 
 #[ntex::main]
 async fn main() -> std::io::Result<()> {

@@ -1,11 +1,31 @@
+use std::sync::Arc;
 use log::error;
 use serde_derive::{Deserialize, Serialize};
 use crate::biz_code::BizCode;
 use crate::biz_error::BizError;
 use crate::data_utils;
 
+#[derive(Debug, Clone, Deserialize)]
+#[allow(unused)]
+pub struct LogInfo {
+    project_name: String,
+    server_name: String,
+    path: String,
+}
+
+impl LogInfo {
+    pub fn get_path(&self) -> &String {
+        &self.path
+    }
+
+    pub fn get_server_name(&self) -> &String {
+        &self.server_name
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LogBody {
+    pub project_name: String,
     pub server_name: String,
     pub server_ip: String,
     pub log_info: String,
@@ -13,9 +33,10 @@ pub struct LogBody {
 }
 
 impl LogBody {
-    pub fn new(server_name: String, server_ip: String, log_info: String) -> Self {
+    pub fn new(arc_log: Arc<LogInfo>, server_ip: String, log_info: String) -> Self {
         Self {
-            server_name,
+            project_name: arc_log.project_name.to_owned(),
+            server_name: arc_log.server_name.to_owned(),
             server_ip,
             log_info,
             log_day: data_utils::to_day_str()
