@@ -3,7 +3,7 @@ use std::sync::Arc;
 use tokio::sync::OnceCell;
 
 use anyhow::Result;
-use common::log::{error, info};
+use common::log::{debug, error, info};
 use common::models::{LogBody, LogInfo};
 use crate::publish::api_upload::{send_log};
 use crate::publish::http_client;
@@ -69,7 +69,7 @@ impl LogInfoMonitor {
 }
 
 async fn send_msg(msg: &str, log_info: Arc<LogInfo>) {
-    info!("Collection logs: file log_info[{:?}] \n{}", &log_info, msg);
+    debug!("Collection logs: file log_info[{:?}] \n{}", &log_info, msg);
     let pub_ip = http_client::get_pub_ip_str().await;
     let log_body = LogBody::new(Arc::clone(&log_info), pub_ip.to_string(), msg.to_string());
 
