@@ -46,6 +46,7 @@ macro_rules! biz_codes {
 biz_codes! {
     ("000000", SUCCESS, "Success");
     ("000001", SYSTEM_ERROR, "System error");
+    ("000002", STATIC_OAUTH_NOT_CONFIG, "static oauth info not config");
     // Bcrypt
     ("BE0001", BCRYPT_ERROR, "Bcrypt error");
     // auth

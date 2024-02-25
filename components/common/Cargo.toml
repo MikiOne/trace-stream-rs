@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 derive_more = "0.99.17"
-thiserror = "1.0.57"
+#thiserror = "1.0.57"
 chrono = "0.4.34"
 
 anyhow = { version = "1.0.80", features = [] }

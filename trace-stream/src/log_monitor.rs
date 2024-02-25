@@ -8,7 +8,7 @@ use common::models::LogBody;
 use crate::publish::api_upload::{send_log};
 use crate::publish::http_client;
 use crate::publish::settings::{LogInfo, RemoteServerConfig};
-use crate::publish::setup::REMOTE_SERVER;
+use crate::setup::REMOTE_SERVER;
 
 
 pub async fn init_monitor(log_infos: Vec<LogInfo>) {

@@ -15,15 +15,11 @@ use crate::trace::trace_api;
 
 mod settings;
 mod trace;
+mod setup;
 
 #[ntex::main]
 async fn main() -> std::io::Result<()> {
-    let settings = Settings::new().expect("读取配置文件出错");
-    let store_path = settings.store_path();
-    let log_path = PathBuf::from(store_path.clone());
-
-    init_store_path(&log_path).await;
-    ConfigLog4rs::new(&log_path).unwrap().init_config().unwrap();
+    setup::init().await;
 
     let bind = "0.0.0.0:7200";
     info!("Starting server at: {}", &bind);

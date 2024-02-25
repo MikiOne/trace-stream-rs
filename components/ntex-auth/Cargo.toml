@@ -8,8 +8,9 @@ edition = "2021"
 [dependencies]
 common = { version = "0.1.0", path = "../common" }
 
+tokio = "1.36.0"
 ntex = { version = "0.7.8", features = ["tokio"] }
-ntex-bytes = "0.1.21"
+#ntex-bytes = "0.1.21"
 jsonwebtoken = "9.1.0"
 futures = "0.3.29"
 log = "0.4.20"

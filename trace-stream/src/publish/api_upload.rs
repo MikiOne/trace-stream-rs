@@ -11,7 +11,7 @@ use common::models::LogBody;
 use ntex_auth::auth::models::TokenInfo;
 use crate::publish::http_client::ReqwestClient;
 use crate::publish::settings::RemoteServerConfig;
-use crate::publish::setup::REMOTE_SERVER;
+use crate::setup::REMOTE_SERVER;
 
 // todo: 这里不能使用一次初始化的方式，因为登录后会更新token
 static ACCESS_TOKEN: OnceCell<String> = OnceCell::const_new();

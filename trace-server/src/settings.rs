@@ -2,15 +2,8 @@ use std::env;
 
 use config::{Config, ConfigError, File};
 use serde_derive::Deserialize;
+use ntex_auth::StaticOauth;
 
-
-#[derive(Debug, Clone, Deserialize)]
-#[allow(unused)]
-pub struct StaticOauth {
-    pub auth_uid: String,
-    pub pwd_md5: String,
-    pub pwd_bcrypt_hash: String,
-}
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(unused)]
