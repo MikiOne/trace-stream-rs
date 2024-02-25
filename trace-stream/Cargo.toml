@@ -16,9 +16,7 @@ serde = { version = "1.0.196", features = ["derive"] }
 tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread", "macros", "net"] }
 async-log-watcher = "0.0.1"
 
-rdkafka = { version = "0.36.2" }
 reqwest = { version = "0.11.24", features = ["multipart", "json"] }
-lapin = { version = "2.3.1" }
 futures-lite = "2.2.0"
 async-global-executor = "2.4.1"
 thiserror = "1.0.57"
@@ -26,25 +24,4 @@ config = "0.14.0"
 serde_derive = "1.0.196"
 #log = "0.4.20"
 
-[dev-dependencies]
-tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread", "macros", "net"] }
-tracing-subscriber = "0.3.18"
-kafka = "0.10.0"
-futures = { version = "0.3.30", features = [] }
-rand = "0.8.5"
-clap = "4.5.1"
 
-
-[features]
-default = []
-full = [
-    "kafka",
-    "rabbitmq"
-]
-kafka = [
-    "rdkafka/cmake-build",
-    "rdkafka/gssapi-vendored"
-]
-rabbitmq = [
-    "lapin/amq-protocol-codegen"
-]

@@ -35,9 +35,18 @@ anyhow = { version = "1.0.80", features = [] }
 #jsonwebtoken = "9.1.0"
 #thiserror = "1.0.50"
 #reqwest = { version = "0.11", features = ["blocking", "json", "multipart"] }
+rdkafka = { version = "0.36.2" }
+# amqp
+lapin = { version = "2.3.1" }
 
 
 [dev-dependencies]
+tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread", "macros", "net"] }
+tracing-subscriber = "0.3.18"
+kafka = "0.10.0"
+futures = { version = "0.3.30", features = [] }
+rand = "0.8.5"
+clap = "4.5.1"
 
 #[target.x86_64-unknown-linux-gnu]
 #linker = "x86_64-linux-musl-gcc"
@@ -53,3 +62,17 @@ anyhow = { version = "1.0.80", features = [] }
 #xargo = false
 #image = "togettoyou/ghcr.io.cross-rs.aarch64-unknown-linux-gnu:main"
 
+
+[features]
+default = []
+full = [
+    "kafka",
+    "rabbitmq"
+]
+kafka = [
+    "rdkafka/cmake-build",
+    "rdkafka/gssapi-vendored"
+]
+rabbitmq = [
+    "lapin/amq-protocol-codegen"
+]

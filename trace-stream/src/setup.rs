@@ -4,8 +4,8 @@ use common::log4rs_config::ConfigLog4rs;
 use ntex_auth::init_static_oauth;
 use crate::log_monitor;
 use crate::publish::api_upload::login;
+use crate::settings::{RemoteServerConfig, Settings};
 
-use crate::publish::settings::{RemoteServerConfig, Settings};
 
 pub static REMOTE_SERVER: OnceCell<RemoteServerConfig> = OnceCell::const_new();
 
