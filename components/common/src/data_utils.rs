@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, NaiveDateTime, ParseResult, TimeZone, Utc};
+use chrono::{DateTime, Local, NaiveDateTime, TimeZone, Utc};
 use chrono::prelude::*;
 use log::error;
 
@@ -33,6 +33,7 @@ fn compare_date() {
     // assert_eq!(diff_days(&today, &date), 3);
 }
 
+#[test]
 fn main2() {
     // 假设我们有一个日期字符串
     let date_str = "2024-02-22"; // 日期格式为 YYYY-MM-DD
@@ -58,6 +59,7 @@ fn main2() {
     }
 }
 
+#[test]
 fn main1() {
     // 获取当前的UTC时间
     let utc_now: DateTime<Utc> = Utc::now();

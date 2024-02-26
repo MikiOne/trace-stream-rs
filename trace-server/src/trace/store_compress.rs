@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use flate2::Compression;
 use flate2::write::GzEncoder;
-use log::{debug, error, info, warn};
+use log::{debug, error, warn};
 use regex::Regex;
 use tokio::sync::OnceCell;
 
@@ -39,7 +39,7 @@ pub fn store(log: &LogBody) {
     let logfile = store_path.join(filename);
 
     let header = format!("[{}:{}]", log.server_ip, log.server_name);
-    let mut lines = log.log_info.split("\n");
+    let lines = log.log_info.split("\n");
     let log_lines: Vec<String> = lines
         .map(|line| if starts_with_date(line)
         { format!("{} {}", header, line) } else { line.to_string() })

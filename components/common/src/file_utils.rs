@@ -1,13 +1,9 @@
 use std::fs;
-use std::fs::{DirEntry, File, Metadata, OpenOptions};
+use std::fs::{DirEntry, File, OpenOptions};
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::time::SystemTime;
 
-use chrono::{DateTime, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Utc};
-use log::{error, info, warn};
-// use regex::{Match, Regex};
-
+use log::{error, info};
 
 pub fn exists(file_buf: &PathBuf) -> bool {
     file_buf.exists()
