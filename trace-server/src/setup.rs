@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use common::log4rs_config::ConfigLog4rs;
 use ntex_auth::init_static_oauth;
 use crate::settings::Settings;
-use crate::trace::store_compress::init_store_path;
+use crate::trace::async_store_compress::init_store_path;
 
 pub async fn init() {
     let config = Settings::new().expect("读取配置文件出错");
