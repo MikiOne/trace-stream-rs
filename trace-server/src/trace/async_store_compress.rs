@@ -20,7 +20,7 @@ use common::data_utils::to_previous_day;
 use common::file_utils::create_dir;
 use common::models::LogBody;
 
-static GLOBAL_MAP: Lazy<Mutex<HashMap<String, File>>> = Lazy::new(|| {
+static GLOBAL_MAP: Lazy<Mutex<HashMap<String, Arc<Mutex<File>>>>> = Lazy::new(|| {
     let m = HashMap::new();
     Mutex::new(m)
 });
@@ -54,7 +54,6 @@ pub async fn store(log: &LogBody) {
     let logfile = store_path.join(filename);
     let mut map = GLOBAL_MAP.lock().await;
 
-
     let header = format!("[{}:{}]", log.server_ip, log.server_name);
     let lines = log.log_info.split("\n");
     let log_lines: Vec<String> = lines
@@ -66,23 +65,33 @@ pub async fn store(log: &LogBody) {
 
     if logfile.exists() {
         let file_writer = Arc::new(Mutex::new(map.get(&map_key).unwrap()));
-        write_async(file_writer.clone(), rx).await;
+        let file = file_writer.clone();
+        let file = file.lock().await;
+        let file = file.clone();
+        write_async(file, rx).await;
     } else {
         // 打开文件一次，以追加模式写入
         let file = OpenOptions::new().create(true).write(true).append(true).open(logfile).await.unwrap();
-        map.insert(map_key.clone(), file);
+        map.insert(map_key.clone(), Arc::new(Mutex::new(file)));
 
         let file_writer = Arc::new(Mutex::new(map.get(&map_key).unwrap()));
-        write_async(file_writer.clone(), rx).await;
+        let file = file_writer.clone();
+        let file = file.lock().await;
+        let file = file.clone();
+        write_async(file, rx).await;
         // 如果创建新的文件，则需要压缩旧的文件
         compress_old_file(log);
 
         // remove old from map
-        map.remove(&map_key);
+        {
+            let mut map = GLOBAL_MAP.lock().await;
+            map.remove(&map_key);
+        }
     }
 }
 
 
+// todo 启一个异步线程来写入
 pub async fn write_async(file_writer: Arc<Mutex<File>>, mut rx: Receiver<Vec<String>>) {
     let writer_clone = file_writer.clone();
     tokio::spawn(async move {
