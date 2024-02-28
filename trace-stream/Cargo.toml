@@ -23,5 +23,8 @@ thiserror = "1.0.57"
 config = "0.14.0"
 serde_derive = "1.0.196"
 #log = "0.4.20"
+#tikv-jemallocator = "0.5"
+#jemallocator = "0.5.4"
 
-
+[profile.release]
+codegen-units = 1

@@ -1,13 +1,12 @@
-use std::path::PathBuf;
-
 use ntex::web;
 use ntex::web::{App, HttpServer, ServiceConfig};
 
-use common::log4rs_config::ConfigLog4rs;
 use common::log::info;
 use ntex_auth::auth::auth_api;
 use ntex_auth::middleware::auth_filter;
 
+// #[global_allocator]
+// static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 
 mod log_monitor;
 mod publish;

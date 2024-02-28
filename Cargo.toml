@@ -21,3 +21,6 @@ path = "trace-stream/src/main.rs"
 [[bin]]
 name = "trace-server"
 path = "trace-server/src/main.rs"
+
+[profile.release]
+codegen-units = 1
