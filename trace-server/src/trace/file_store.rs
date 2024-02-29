@@ -161,6 +161,11 @@ async fn handle_old_file(log: &LogBody, logfile: &PathBuf) {
 
 async fn remove_preday_file(map_key: String) {
     let mut map = GLOBAL_MAP.lock().await;
+    if let Some(file) = map.get(&map_key) {
+        let arc_file = file.clone();
+        let old_file = arc_file.lock().await;
+        drop(old_file);
+    }
     map.remove(&map_key);
 }
 

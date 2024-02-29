@@ -28,7 +28,7 @@ mod setup;
 async fn main() -> std::io::Result<()> {
     setup::init().await;
 
-    let (tx, mut rx) = mpsc::channel::<FileData>(10);
+    let (tx, mut rx) = mpsc::channel::<FileData>(200);
     // 将 sender 设为全局
     FileDataSender::init(tx).await;
     tokio::spawn(async move {

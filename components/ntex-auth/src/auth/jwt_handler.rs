@@ -70,7 +70,7 @@ pub fn jwt_from_header(headers: &HeaderMap) -> BizResult<String> {
         return Err(BizError::new(BizCode::INVALID_AUTH_HEADER));
     }
 
-    info!("auth_header: {}", auth_header);
+    debug!("auth_header: {}", auth_header);
     Ok(auth_header.trim_start_matches(BEARER).to_owned())
 }
 
