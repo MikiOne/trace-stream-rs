@@ -5,13 +5,13 @@ use ntex::web::types::Json;
 
 use common::biz_resp::RespData;
 use common::models::LogBody;
-use crate::trace::async_store_compress;
+use crate::trace::{ file_store};
 
 #[web::post("/trace/collect")]
 pub async fn store_log(
     log: Json<LogBody>,
 ) -> Result<impl Responder, web::Error> {
-    async_store_compress::store(&log).await;
+    file_store::send_file_data(&log).await;
     info!("Logs saved successfully: {}", log.print_base());
     Ok(HttpResponse::Ok().json(&RespData::success()))
 }

@@ -2,13 +2,16 @@
 // use jemallocator::Jemalloc;
 
 use log::info;
-use ntex::server::Server;
 use ntex::web::{App, HttpServer};
 use ntex::web;
-use ntex::web::{ServiceConfig};
+use ntex::web::ServiceConfig;
+use tokio::sync::mpsc;
+
 use ntex_auth::auth::auth_api;
 use ntex_auth::middleware::auth_filter;
-use crate::trace::trace_api;
+use crate::trace::file_store::{FileData, FileDataSender};
+
+use crate::trace::{file_store, trace_api};
 
 // #[cfg(not(target_env = "msvc"))]
 // #[global_allocator]
@@ -24,6 +27,15 @@ mod setup;
 #[ntex::main]
 async fn main() -> std::io::Result<()> {
     setup::init().await;
+
+    let (tx, mut rx) = mpsc::channel::<FileData>(10);
+    // 将 sender 设为全局
+    FileDataSender::init(tx).await;
+    tokio::spawn(async move {
+        while let Some(file_data) = rx.recv().await {
+            file_store::store_data(file_data).await;
+        }
+    });
 
     let bind = "0.0.0.0:7200";
     info!("Starting server at: {}", &bind);

@@ -61,7 +61,7 @@ impl ConfigLog4rs {
             )
             .build(
                 Root::builder()
-                    // .appender("stdout")
+                    .appender("stdout")
                     .appender("error_log_file")
                     .appender("default_log_file")
                     .build(LevelFilter::Info),
